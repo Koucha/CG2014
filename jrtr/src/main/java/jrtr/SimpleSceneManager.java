@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Iterator;
 
+import javax.vecmath.Vector3f;
+
 /**
  * A simple scene manager that stores objects and lights in linked lists.
  */
@@ -32,9 +34,24 @@ public class SimpleSceneManager implements SceneManagerInterface {
 		return frustum;
 	}
 	
+	public void setCamera(Camera camera)
+	{
+		this.camera = camera;
+	}
+
+	public void setFrustum(Frustum frustum)
+	{
+		this.frustum = frustum;
+	}
+
 	public void addShape(Shape shape)
 	{
 		shapes.add(shape);
+	}
+	
+	public void clearShapes()
+	{
+		shapes.clear();
 	}
 	
 	public void addLight(Light light)

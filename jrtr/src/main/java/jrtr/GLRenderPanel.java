@@ -78,7 +78,9 @@ public abstract class GLRenderPanel implements RenderPanel {
 		// Make sure we get a canvas with OpenGL 3 capabilities (omitting 
 		// this leads to problems on Apple Macs)
 		GLProfile pProf = GLProfile.get(GLProfile.GL3);
-	    canvas = new GLCanvas(new GLCapabilities(pProf));
+		GLCapabilities cap = new GLCapabilities(pProf);
+		cap.setDoubleBuffered(true);
+	    canvas = new GLCanvas(cap);
 	    
 	    System.out.println(GLProfile.getMaxProgrammable(true));
 	    

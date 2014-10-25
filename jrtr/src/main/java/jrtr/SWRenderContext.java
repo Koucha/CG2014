@@ -193,22 +193,48 @@ public class SWRenderContext implements RenderContext {
 					continue;
 				}
 			}
-			
+								
 			for(int y = ymin; y <= ymax; y++)
 			{
 				for(int x = xmin; x <= xmax; x++)
 				{
-					if(a_a*(x + 0.5) + b_a*(y + 0.5) + c_a > 0 &&
-					   a_b*(x + 0.5) + b_b*(y + 0.5) + c_b > 0 &&
-					   a_g*(x + 0.5) + b_g*(y + 0.5) + c_g > 0)	// if inside triangle
+					if( inside(x, y, a_a, b_a, c_a,  a_b, b_b, c_b,  a_g, b_g, c_g) )	// if inside triangle
 					{
-						colorBuffer.setRGB(x, y, Color.WHITE.getRGB());
-					}else{
-						//colorBuffer.setRGB(x, y, Color.RED.getRGB());
+						Vector3f r = new Vector3f(col1.x, col2.x, col3.x);
+						Vector3f g = new Vector3f(col1.y, col2.y, col3.y);
+						Vector3f b = new Vector3f(col1.z, col2.z, col3.z);
+						Vector3f eins = new Vector3f(1, 1, 1);
+						Vector3f bscor = new Vector3f(x, y, 1);
+
+						invvercor.transform(r);
+						invvercor.transform(g);
+						invvercor.transform(b);
+						invvercor.transform(eins);
+						float antiw = eins.dot(bscor);
+						
+						colorBuffer.setRGB(x, y, (new Color(r.dot(bscor)/antiw, g.dot(bscor)/antiw, b.dot(bscor)/antiw)).getRGB());
 					}
 				}
 			}
 		}
+	}
+	
+	private boolean inside(int x, int y, float a_a, float b_a, float c_a,  float a_b, float b_b, float c_b,  float a_g, float b_g, float c_g)
+	{
+		return (a_a*(x + 0.5) + b_a*(y + 0.5) + c_a > 0 &&
+			    a_b*(x + 0.5) + b_b*(y + 0.5) + c_b > 0 &&
+			    a_g*(x + 0.5) + b_g*(y + 0.5) + c_g > 0) ||
+			   (a_a*(x + 0.5) + b_a*(y + 0.5) + c_a == 0 &&
+			    a_b*(x + 0.5) + b_b*(y + 0.5) + c_b == 0 &&
+			    a_g*(x + 0.5) + b_g*(y + 0.5) + c_g == 0 &&
+			    a_a*(x + 1.5) + b_a*(y + 0.5) + c_a >= 0 &&
+			    a_b*(x + 1.5) + b_b*(y + 0.5) + c_b >= 0 &&
+			    a_g*(x + 1.5) + b_g*(y + 0.5) + c_g >= 0);
+	}
+	
+	private boolean contained(Vector4f point, int xmin, int xmax, int ymin, int ymax)
+	{
+		return xmin <= point.x && point.x <= xmax && ymin <= point.y && point.y <= ymax;
 	}
 	
 	/**

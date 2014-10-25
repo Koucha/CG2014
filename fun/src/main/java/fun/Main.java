@@ -60,7 +60,7 @@ public class Main
 			// Make a scene manager and add the object
 			sceneManager = new SimpleSceneManager();
 
-			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 1, 0, 0);
+			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 0.7f, 0.6f, 0.2f);
 			theThing.attachTo(sceneManager);
 			
 			// create camera

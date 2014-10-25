@@ -28,6 +28,8 @@ public class SWRenderContext implements RenderContext {
 	private SceneManagerInterface sceneManager;
 	private BufferedImage colorBuffer;
 	private float[][] zBuffer;
+	
+	final int delta = 6;
 		
 	public void setSceneManager(SceneManagerInterface sceneManager)
 	{
@@ -116,12 +118,16 @@ public class SWRenderContext implements RenderContext {
 		Vector4f normal1 = null, normal2 = null, normal3 = null;
 		Vector2f teco1 = null, teco2 = null, teco3 = null;
 		Vector3f col1 = null, col2 = null, col3 = null;
+		Matrix3f invvercor = null;
 		
+		boolean skip = false;
 		for(int i = 0; i < indices.length; i = i + 3)
 		{
+			skip = false;
+			
 			Iterator<VertexData.VertexElement> vdIt = vd.getElements().descendingIterator();
 			VertexData.VertexElement ve;
-			while(vdIt.hasNext())
+			while(!skip && vdIt.hasNext())
 			{
 				ve = vdIt.next();
 				float[] data = ve.getData();
@@ -131,16 +137,48 @@ public class SWRenderContext implements RenderContext {
 					vertex1 = new Vector4f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2], 1);
 					vertex2 = new Vector4f(data[3*indices[i + 1]], data[3*indices[i + 1] + 1], data[3*indices[i + 1] + 2], 1);
 					vertex3 = new Vector4f(data[3*indices[i + 2]], data[3*indices[i + 2] + 1], data[3*indices[i + 2] + 2], 1);
+					
+					toPixelspace.transform(vertex1);
+					toPixelspace.transform(vertex2);
+					toPixelspace.transform(vertex3);
+					
+					if(vertex1.w < 0 && vertex2.w < 0 && vertex3.w < 0)	// triangle behind eye
+					{
+						skip = true;
+						break;
+					}
+					
+					Matrix3f vercor = new Matrix3f();
+					vercor.m00 = vertex1.x; vercor.m01 = vertex1.y; vercor.m02 = vertex1.w;
+					vercor.m10 = vertex2.x; vercor.m11 = vertex2.y; vercor.m12 = vertex2.w;
+					vercor.m20 = vertex3.x; vercor.m21 = vertex3.y; vercor.m22 = vertex3.w;
+					
+					if(vercor.determinant() < 0)	// backface culling
+					{
+						skip = true;
+						break;
+					}
+					
+					invvercor = new Matrix3f(vercor);
+					try{
+						invvercor.invert();
+					}catch(SingularMatrixException e){	// singular
+						skip = true;
+						break;
+					}
+					
 					break;
 				case NORMAL:
-					normal1 = new Vector4f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2], 1);
-					normal2 = new Vector4f(data[3*indices[i + 1]], data[3*indices[i + 1] + 1], data[3*indices[i + 1] + 2], 1);
-					normal3 = new Vector4f(data[3*indices[i + 2]], data[3*indices[i + 2] + 1], data[3*indices[i + 2] + 2], 1);
+					normal1 = new Vector4f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2], 0);
+					normal2 = new Vector4f(data[3*indices[i + 1]], data[3*indices[i + 1] + 1], data[3*indices[i + 1] + 2], 0);
+					normal3 = new Vector4f(data[3*indices[i + 2]], data[3*indices[i + 2] + 1], data[3*indices[i + 2] + 2], 0);
+					//TODO
 					break;
 				case TEXCOORD:
 					teco1 = new Vector2f(data[2*indices[i]], data[2*indices[i] + 1]);
 					teco2 = new Vector2f(data[2*indices[i + 1]], data[2*indices[i + 1] + 1]);
 					teco3 = new Vector2f(data[2*indices[i + 2]], data[2*indices[i + 2] + 1]);
+					//TODO
 					break;
 				case COLOR:
 					col1 = new Vector3f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2]);
@@ -149,36 +187,16 @@ public class SWRenderContext implements RenderContext {
 					break;
 				}
 			}
-
-			toPixelspace.transform(vertex1);
-			toPixelspace.transform(vertex2);
-			toPixelspace.transform(vertex3);
 			
-			if(vertex1.w < 0 && vertex2.w < 0 && vertex3.w < 0)	// triangle behind eye
+			if(skip)
 			{
 				continue;
 			}
 			
-			Matrix3f vercor = new Matrix3f();
-			vercor.m00 = vertex1.x; vercor.m01 = vertex1.y; vercor.m02 = vertex1.w;
-			vercor.m10 = vertex2.x; vercor.m11 = vertex2.y; vercor.m12 = vertex2.w;
-			vercor.m20 = vertex3.x; vercor.m21 = vertex3.y; vercor.m22 = vertex3.w;
-			
-			Matrix3f invvercor = new Matrix3f(vercor);
-			try{
-				invvercor.invert();
-			}catch(SingularMatrixException e){	// singular
-				continue;
-			}
-			
-			
-			float a_a = invvercor.m00, a_b = invvercor.m01, a_g = invvercor.m02;
-			float b_a = invvercor.m10, b_b = invvercor.m11, b_g = invvercor.m12;
-			float c_a = invvercor.m20, c_b = invvercor.m21, c_g = invvercor.m22;
-			
+			// Color mapping:
 			int xmin = 0, xmax = colorBuffer.getWidth() - 1, ymin = 0, ymax = colorBuffer.getHeight() - 1;
 			
-			if(vertex1.w > 0 && vertex2.w > 0 && vertex3.w > 0)
+			if(vertex1.w > 0 && vertex2.w > 0 && vertex3.w > 0)	// calculate bounding square if possible
 			{
 				float x1 = vertex1.x/vertex1.w, y1 = vertex1.y/vertex1.w, 
 					  x2 = vertex2.x/vertex2.w, y2 = vertex2.y/vertex2.w,
@@ -193,48 +211,166 @@ public class SWRenderContext implements RenderContext {
 					continue;
 				}
 			}
-								
-			for(int y = ymin; y <= ymax; y++)
+			
+			// iterate over bounding box
+			Vector3f eins = new Vector3f(1, 1, 1);
+			invvercor.transform(eins);
+			
+			//*
+			for(int y = ymin; y < ymax; y++)
 			{
-				for(int x = xmin; x <= xmax; x++)
+				for(int x = xmin; x < xmax; x++)
 				{
-					if( inside(x, y, a_a, b_a, c_a,  a_b, b_b, c_b,  a_g, b_g, c_g) )	// if inside triangle
+					if( inside(x, y, invvercor) )	// if inside triangle
 					{
-						Vector3f r = new Vector3f(col1.x, col2.x, col3.x);
-						Vector3f g = new Vector3f(col1.y, col2.y, col3.y);
-						Vector3f b = new Vector3f(col1.z, col2.z, col3.z);
-						Vector3f eins = new Vector3f(1, 1, 1);
-						Vector3f bscor = new Vector3f(x, y, 1);
+						calcPixel(invvercor, eins, col1, col2, col3, y, x);
+					}
+				}
+			}
+			/*/
+			for(int yb = ymin; yb < ymax + 2*delta; yb += 2*delta)
+			{
+				for(int xb = xmin; xb < xmax + 2*delta; xb += 2*delta)
+				{
+					level1(xb, yb, xmax, ymax, invvercor, eins, col1, col2, col3);
+				}
+			}
+			//*/
+		}
+	}
+	
+	private void level1(int xb, int yb, int xmax, int ymax, Matrix3f invvercor, Vector3f eins, Vector3f col1, Vector3f col2, Vector3f col3)
+	{
+		boolean ul = testHline(xb, xb + delta, yb, invvercor, eins, col1, col2, col3);
+		boolean ur = testHline(xb + delta, xb + 2*delta, yb, invvercor, eins, col1, col2, col3);
+		boolean lu = testVline(xb, yb, yb + delta, invvercor, eins, col1, col2, col3);
+		boolean ld = testVline(xb, yb + delta, yb + 2*delta, invvercor, eins, col1, col2, col3);
+		boolean dl = testHline(xb, xb + delta, yb, invvercor, eins, col1, col2, col3);
+		boolean dr = testHline(xb + delta, xb + 2*delta, yb, invvercor, eins, col1, col2, col3);
+		boolean ru = testVline(xb, yb, yb + delta, invvercor, eins, col1, col2, col3);
+		boolean rd = testVline(xb, yb + delta, yb + 2*delta, invvercor, eins, col1, col2, col3);
+		
+		if(ul || ur || lu || ld || dl || dr || ru || rd)
+		{
+			level2(xb, yb, xmax, ymax, invvercor, eins, col1, col2, col3, (ul || lu)?(5):(1));
+			level2(xb + delta, yb, xmax, ymax, invvercor, eins, col1, col2, col3, (ur || ru)?(6):(2));
+			level2(xb + delta, yb + delta, xmax, ymax, invvercor, eins, col1, col2, col3, (dr || rd)?(7):(3));
+			level2(xb, yb + delta, xmax, ymax, invvercor, eins, col1, col2, col3, (dl || ld)?(8):(4));
+		}
+	}
+	
+	private void level2(int xs, int ys, int xmax, int ymax, Matrix3f invvercor, Vector3f eins, Vector3f col1, Vector3f col2, Vector3f col3, int type)
+	{
+		boolean fill = (type > 4)?(true):(false);
+		type = type%4;
 
-						invvercor.transform(r);
-						invvercor.transform(g);
-						invvercor.transform(b);
-						invvercor.transform(eins);
-						float antiw = eins.dot(bscor);
-						
-						colorBuffer.setRGB(x, y, (new Color(r.dot(bscor)/antiw, g.dot(bscor)/antiw, b.dot(bscor)/antiw)).getRGB());
+		if(type == 0 && type == 1) //right line
+		{
+			fill = fill || testVline(xs + delta - 1, ys, ys + delta, invvercor, eins, col1, col2, col3);
+		}
+		if(type == 0 && type == 3) //upper line
+		{
+			fill = fill || testHline(xs, xs + delta, ys, invvercor, eins, col1, col2, col3);
+		}
+		if(type == 2 && type == 3) //left line
+		{
+			fill = fill || testVline(xs, ys, ys + delta, invvercor, eins, col1, col2, col3);
+		}
+		if(type == 2 && type == 1) //bottom line
+		{
+			fill = fill || testHline(xs, xs + delta, ys + delta - 1, invvercor, eins, col1, col2, col3);
+		}
+		
+		if(fill)
+		{
+			for(int y = ys + 1; y < ys + delta; y++)
+			{
+				for(int x = xs + 1; x < xs + delta; x++)
+				{
+					if( inside(x, y, invvercor) )	// if inside triangle
+					{
+						calcPixel(invvercor, eins, col1, col2, col3, y, x);
 					}
 				}
 			}
 		}
 	}
-	
-	private boolean inside(int x, int y, float a_a, float b_a, float c_a,  float a_b, float b_b, float c_b,  float a_g, float b_g, float c_g)
+
+	private void calcPixel(Matrix3f invvercor, Vector3f eins, Vector3f col1, Vector3f col2, Vector3f col3, int y, int x)
 	{
-		return (a_a*(x + 0.5) + b_a*(y + 0.5) + c_a > 0 &&
-			    a_b*(x + 0.5) + b_b*(y + 0.5) + c_b > 0 &&
-			    a_g*(x + 0.5) + b_g*(y + 0.5) + c_g > 0) ||
-			   (a_a*(x + 0.5) + b_a*(y + 0.5) + c_a == 0 &&
-			    a_b*(x + 0.5) + b_b*(y + 0.5) + c_b == 0 &&
-			    a_g*(x + 0.5) + b_g*(y + 0.5) + c_g == 0 &&
-			    a_a*(x + 1.5) + b_a*(y + 0.5) + c_a >= 0 &&
-			    a_b*(x + 1.5) + b_b*(y + 0.5) + c_b >= 0 &&
-			    a_g*(x + 1.5) + b_g*(y + 0.5) + c_g >= 0);
+		if(y < 0 || colorBuffer.getHeight() <= y || x < 0 || colorBuffer.getWidth() <= x)
+		{
+			return;
+		}
+		
+		float antiw = eins.x*x + eins.y*y + eins.z;
+		
+		if(antiw > zBuffer[x][y])	// depth test
+		{
+			zBuffer[x][y] = antiw;
+		
+			Vector3f rv = new Vector3f(col1.x*255, col2.x*255, col3.x*255);
+			Vector3f gv = new Vector3f(col1.y*255, col2.y*255, col3.y*255);
+			Vector3f bv = new Vector3f(col1.z*255, col2.z*255, col3.z*255);
+
+			invvercor.transform(rv);
+			invvercor.transform(gv);
+			invvercor.transform(bv);
+			int r = calcCol(x, y, rv, antiw);
+			int g = calcCol(x, y, gv, antiw);
+			int b = calcCol(x, y, bv, antiw);
+			
+			colorBuffer.setRGB(x, y, (new Color(r, g, b)).getRGB());
+		}
 	}
 	
-	private boolean contained(Vector4f point, int xmin, int xmax, int ymin, int ymax)
+	private int calcCol(int x, int y, Vector3f col, float antiw)
 	{
-		return xmin <= point.x && point.x <= xmax && ymin <= point.y && point.y <= ymax;
+		int c = (int) ((col.x*x + col.y*y + col.z)/antiw);
+		c = (c < 0)?(0):(c);
+		c = (c > 255)?(255):(c);
+		return c;
+	}
+	
+	private boolean inside(int x, int y, Matrix3f invvercor)
+	{
+		return (invvercor.m00*(x + 0.5) + invvercor.m10*(y + 0.5) + invvercor.m20 > 0 &&
+			    invvercor.m01*(x + 0.5) + invvercor.m11*(y + 0.5) + invvercor.m21 > 0 &&
+			    invvercor.m02*(x + 0.5) + invvercor.m12*(y + 0.5) + invvercor.m22 > 0) ||
+			   (invvercor.m00*(x + 0.5) + invvercor.m10*(y + 0.5) + invvercor.m20 == 0 &&
+			    invvercor.m01*(x + 0.5) + invvercor.m11*(y + 0.5) + invvercor.m21 == 0 &&
+			    invvercor.m02*(x + 0.5) + invvercor.m12*(y + 0.5) + invvercor.m22 == 0 &&
+			    invvercor.m00*(x + 1.5) + invvercor.m10*(y + 0.5) + invvercor.m20 >= 0 &&
+			    invvercor.m01*(x + 1.5) + invvercor.m11*(y + 0.5) + invvercor.m21 >= 0 &&
+			    invvercor.m02*(x + 1.5) + invvercor.m12*(y + 0.5) + invvercor.m22 >= 0);
+	}
+	
+	private boolean testHline(int xmin, int xmax, int y, Matrix3f invvercor, Vector3f eins, Vector3f col1, Vector3f col2, Vector3f col3)
+	{
+		boolean retval = false;
+		for(int x = xmin; x < xmax; x++)
+		{
+			if(inside(x, y, invvercor))
+			{
+				calcPixel(invvercor, eins, col1, col2, col3, y, x);
+				retval = true;
+			}
+		}
+		return retval;
+	}
+	
+	private boolean testVline(int x, int ymin, int ymax, Matrix3f invvercor, Vector3f eins, Vector3f col1, Vector3f col2, Vector3f col3)
+	{
+		boolean retval = false;
+		for(int y = ymin; y < ymax; y++)
+		{
+			if(inside(x, y, invvercor))
+			{
+				calcPixel(invvercor, eins, col1, col2, col3, y, x);
+				retval = true;
+			}
+		}
+		return retval;
 	}
 	
 	/**

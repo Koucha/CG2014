@@ -103,7 +103,7 @@ public class SWRenderContext implements RenderContext {
 	{
 		VertexData vd = renderItem.getShape().getVertexData();
 		
-		TriRenderer triRenderer = new TriRenderer(renderItem, true);
+		TriRenderer triRenderer = new TriRenderer(renderItem, 1);
 		
 		int[] indices = vd.getIndices();
 		Vector4f vertex1 = null, vertex2 = null, vertex3 = null;
@@ -167,8 +167,8 @@ public class SWRenderContext implements RenderContext {
 	private class TriRenderer{
 		
 		private boolean valid;
-		private boolean optimisation;
-		final int delta = 6;
+		private int optimisation;
+		private final int delta = 6;
 		
 		private Matrix4f toPixelspace;
 		private Matrix3f invvercor;
@@ -182,7 +182,7 @@ public class SWRenderContext implements RenderContext {
 		private Vector3f col2;
 		private Vector3f col3;
 		
-		public TriRenderer(RenderItem renderItem, boolean optimisation)
+		public TriRenderer(RenderItem renderItem, int optimisation)
 		{
 			valid = false;
 			this.optimisation = optimisation;
@@ -279,7 +279,25 @@ public class SWRenderContext implements RenderContext {
 			eins = new Vector3f(1, 1, 1);
 			invvercor.transform(eins);
 			
-			if(optimisation == false)
+			if(optimisation == 2)
+			{
+				for(int yb = ymin; yb < ymax + 2*delta; yb += 2*delta)
+				{
+					for(int xb = xmin; xb < xmax + 2*delta; xb += 2*delta)
+					{
+						level1(xb, yb, xmax, ymax);
+					}
+				}
+			}else if(optimisation == 1)
+			{
+				for(int yb = ymin; yb < ymax + 2*delta; yb += 2*delta)
+				{
+					for(int xb = xmin; xb < xmax + 2*delta; xb += 2*delta)
+					{
+						level1Save(xb, yb, xmax, ymax);
+					}
+				}
+			}else
 			{
 				for(int y = ymin; y < ymax; y++)
 				{
@@ -289,15 +307,6 @@ public class SWRenderContext implements RenderContext {
 						{
 							calcPixel(y, x);
 						}
-					}
-				}
-			}else
-			{
-				for(int yb = ymin; yb < ymax + 2*delta; yb += 2*delta)
-				{
-					for(int xb = xmin; xb < xmax + 2*delta; xb += 2*delta)
-					{
-						level1(xb, yb, xmax, ymax);
 					}
 				}
 			}
@@ -372,6 +381,65 @@ public class SWRenderContext implements RenderContext {
 				}
 			}
 		}
+		
+		private void level1Save(int xb, int yb, int xmax, int ymax)
+		{
+			boolean ul = testHline(xb, xb + delta, yb);
+			boolean ur = testHline(xb + delta, xb + 2*delta, yb);
+			boolean lu = testVline(xb, yb, yb + delta);
+			boolean ld = testVline(xb, yb + delta, yb + 2*delta);
+			boolean dl = testHline(xb, xb + delta, yb + 2*delta - 1);
+			boolean dr = testHline(xb + delta, xb + 2*delta, yb + 2*delta - 1);
+			boolean ru = testVline(xb + 2*delta - 1, yb, yb + delta);
+			boolean rd = testVline(xb + 2*delta - 1, yb + delta, yb + 2*delta);
+			
+			if(ul || ur || lu || ld || dl || dr || ru || rd || cornerInside(xb, yb, 2*delta))
+			{
+				level2Save(xb, yb, xmax, ymax, (ul || lu)?(5):(1));
+				level2Save(xb + delta, yb, xmax, ymax, (ur || ru)?(6):(2));
+				level2Save(xb + delta, yb + delta, xmax, ymax, (dr || rd)?(7):(3));
+				level2Save(xb, yb + delta, xmax, ymax, (dl || ld)?(8):(4));
+			}
+		}
+		
+		private void level2Save(int xs, int ys, int xmax, int ymax, int type)
+		{
+			boolean fill = (type > 4)?(true):(false);
+			type = type%4;
+			
+			if(type == 0 || type == 1) //right line
+			{
+				fill = testVline(xs + delta - 1, ys, ys + delta) || fill;
+			}
+			if(type == 0 || type == 3) //upper line
+			{
+				fill = testHline(xs, xs + delta, ys) || fill;
+			}
+			if(type == 2 || type == 3) //left line
+			{
+				fill = testVline(xs, ys, ys + delta) || fill;
+			}
+			if(type == 2 || type == 1) //bottom line
+			{
+				fill = testHline(xs, xs + delta, ys + delta - 1) || fill;
+			}
+			
+			fill = fill || cornerInside(xs, ys, delta);
+			
+			if(fill)
+			{
+				for(int y = ys + 1; y < ys + delta; y++)
+				{
+					for(int x = xs + 1; x < xs + delta; x++)
+					{
+						if( inside(x, y) )	// if inside triangle
+						{
+							calcPixel(y, x);
+						}
+					}
+				}
+			}
+		}
 
 		private void calcPixel(int y, int x)
 		{
@@ -434,6 +502,34 @@ public class SWRenderContext implements RenderContext {
 			test = test || (yb*vertex3.w - 0.1 < vertex3.y && vertex3.y < (yb + delta)*vertex3.w + 0.1);
 			
 			return test;
+		}
+		
+		private boolean testHline(int xmin, int xmax, int y)
+		{
+			boolean retval = false;
+			for(int x = xmin; x < xmax; x++)
+			{
+				if(inside(x, y))
+				{
+					calcPixel(y, x);
+					retval = true;
+				}
+			}
+			return retval;
+		}
+		
+		private boolean testVline(int x, int ymin, int ymax)
+		{
+			boolean retval = false;
+			for(int y = ymin; y < ymax; y++)
+			{
+				if(inside(x, y))
+				{
+					calcPixel(y, x);
+					retval = true;
+				}
+			}
+			return retval;
 		}
 	}
 	

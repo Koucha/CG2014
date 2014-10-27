@@ -349,6 +349,6 @@ public class Main
 
 	private static RenderShape generateNewTerrain()
 	{
-		return new QETerrainRS(null, 30, 30, 10, 10, isobaren, null, null, null, null);
+		return new QETerrainRS(null, 30, 30, 10, 6, isobaren, null, null, null, null);
 	}
 }

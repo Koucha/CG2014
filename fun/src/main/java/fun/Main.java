@@ -19,13 +19,10 @@ public class Main
 {	
 	static RenderPanel renderPanel;
 	static RenderContext renderContext;
-	static Shader normalColSinShader;
+	static Shader normalColShader;
 	static SimpleSceneManager sceneManager;
 	static FlyingCam flyCam;
 	static RenderShape theThing;
-	static RenderShape theThong;
-	static RenderShape theThang1;
-	static RenderShape theThang2;
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
 	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;
@@ -39,7 +36,7 @@ public class Main
 	 * provide a call-back function for initialization. Here we construct
 	 * a simple 3D scene and start a timer task to generate an animation.
 	 */ 
-	public final static class SimpleRenderPanel extends GLRenderPanel
+	public final static class SimpleRenderPanel extends /* / GLRenderPanel /*/ SWRenderPanel //*/
 	{
 		/**
 		 * Initialization call-back. We initialize our renderer here.
@@ -63,35 +60,8 @@ public class Main
 			// Make a scene manager and add the object
 			sceneManager = new SimpleSceneManager();
 
-			Matrix4f temp = new Matrix4f();
-			
-			theThing = generateNewTerrain();
+			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 1, 0, 0);
 			theThing.attachTo(sceneManager);
-			temp.setIdentity();
-			temp.setTranslation(new Vector3f(-15.1f,0,15.1f));
-			theThing.setTransMat(temp);
-			theThing.updateMat();
-			
-			theThong = generateNewQuadTerrain(((TerrainRS)theThing).getHeights());
-			theThong.attachTo(sceneManager);
-			temp.setIdentity();
-			temp.setTranslation(new Vector3f(15.1f,0,15.1f));
-			theThong.setTransMat(temp);
-			theThong.updateMat();
-			
-			theThang1 = generateNewQETerrain(null, ((TerrainRS)theThing).getHeights());
-			theThang1.attachTo(sceneManager);
-			temp.setIdentity();
-			temp.setTranslation(new Vector3f(-15.1f,0,-15.1f));
-			theThang1.setTransMat(temp);
-			theThang1.updateMat();
-			
-			theThang2 = generateNewQETerrain(((QETerrainRS)theThang1).getHeights(), ((QuadTerrainRS)theThong).getHeights());
-			theThang2.attachTo(sceneManager);
-			temp.setIdentity();
-			temp.setTranslation(new Vector3f(15.1f,0,-15.1f));
-			theThang2.setTransMat(temp);
-			theThang2.updateMat();
 			
 			// create camera
 			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
@@ -102,15 +72,15 @@ public class Main
 			sceneManager.setFrustum(new Frustum(0.01f, 100, 1, 60));
 			
 			// Load a shader
-		    normalColSinShader = renderContext.makeShader();
+		    normalColShader = renderContext.makeShader();
 		    try {
-		    	normalColSinShader.load("../jrtr/shaders/normal_col_sin.vert", "../jrtr/shaders/normal_col_sin.frag");
+		    	normalColShader.load("../jrtr/shaders/normal_col.vert", "../jrtr/shaders/normal_col.frag");
 		    } catch(Exception e) {
 		    	System.out.print("Problem with shader:\n");
 		    	System.out.print(e.getMessage());
 		    }
 		    
-		    renderContext.useShader(normalColSinShader);
+		    renderContext.useShader(normalColShader);
 
 			// Register a timer task
 		    Timer timer = new Timer();
@@ -125,34 +95,50 @@ public class Main
 	 */
 	public static class AnimationTask extends TimerTask
 	{
+		private boolean notYetWorking;
+		
+		public AnimationTask()
+		{
+			super();
+			
+			notYetWorking = true;
+		}
+
 		public void run()
 		{
-			flyCam.setDirection(xAngle, yAngle);
-			
-			if(keyDownW && !keyDownSpace)
+			if(notYetWorking)
 			{
-				flyCam.moveFwd(stepsize);
-			}else if(keyDownS && !keyDownSpace)
-			{
-				flyCam.moveFwd(-stepsize);
-			}else if(keyDownW)
-			{
-				flyCam.moveUp(stepsize);
-			}else if(keyDownS)
-			{
-				flyCam.moveUp(-stepsize);
+				notYetWorking = false;	// repaint blockieren für den fall, dass es länger dauert als die refreshrate
+				
+				flyCam.setDirection(xAngle, yAngle);
+				
+				if(keyDownW && !keyDownSpace)
+				{
+					flyCam.moveFwd(stepsize);
+				}else if(keyDownS && !keyDownSpace)
+				{
+					flyCam.moveFwd(-stepsize);
+				}else if(keyDownW)
+				{
+					flyCam.moveUp(stepsize);
+				}else if(keyDownS)
+				{
+					flyCam.moveUp(-stepsize);
+				}
+				
+				if(keyDownD)
+				{
+					flyCam.moveSdw(-stepsize);
+				}else if(keyDownA)
+				{
+					flyCam.moveSdw(stepsize);
+				}
+	    		
+	    		// Trigger redrawing of the render window
+	    		renderPanel.getCanvas().repaint();
+	    		
+	    		notYetWorking = true;	// repaint freigeben
 			}
-			
-			if(keyDownD)
-			{
-				flyCam.moveSdw(-stepsize);
-			}else if(keyDownA)
-			{
-				flyCam.moveSdw(stepsize);
-			}
-    		
-    		// Trigger redrawing of the render window
-    		renderPanel.getCanvas().repaint(); 
 		}
 	}
 
@@ -301,27 +287,6 @@ public class Main
 					temp.setTranslation(new Vector3f(-15.1f,0,15.1f));
 					theThing.setTransMat(temp);
 					theThing.updateMat();
-					
-					theThong = generateNewQuadTerrain(((TerrainRS)theThing).getHeights());
-					theThong.attachTo(sceneManager);
-					temp.setIdentity();
-					temp.setTranslation(new Vector3f(15.1f,0,15.1f));
-					theThong.setTransMat(temp);
-					theThong.updateMat();
-					
-					theThang1 = generateNewQETerrain(null, ((TerrainRS)theThing).getHeights());
-					theThang1.attachTo(sceneManager);
-					temp.setIdentity();
-					temp.setTranslation(new Vector3f(-15.1f,0,-15.1f));
-					theThang1.setTransMat(temp);
-					theThang1.updateMat();
-					
-					theThang2 = generateNewQETerrain(((QETerrainRS)theThang1).getHeights(), ((QuadTerrainRS)theThong).getHeights());
-					theThang2.attachTo(sceneManager);
-					temp.setIdentity();
-					temp.setTranslation(new Vector3f(15.1f,0,-15.1f));
-					theThang2.setTransMat(temp);
-					theThang2.updateMat();
 					break;
 				}
 				case 'f': {
@@ -367,7 +332,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("A3 / A4");
+		JFrame jframe = new JFrame("T3 - A1");
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window
@@ -384,16 +349,6 @@ public class Main
 
 	private static RenderShape generateNewTerrain()
 	{
-		return new TerrainRS(null, 30, 30, 10, 10, 1.5f, -0.3f, 0.5f, isobaren);	// Hügelig
-	}
-	
-	private static RenderShape generateNewQuadTerrain(float[] hi)
-	{
-		return new QuadTerrainRS(null, 30, 30, 10, 10, 1.0f, -0.7f, 0.8f, isobaren, hi, null, null, null);
-	}
-
-	private static RenderShape generateNewQETerrain(float[] hiL, float[] hiD)
-	{
-		return new QETerrainRS(null, 30, 30, 10, 10, isobaren, hiL, hiD, null, null);
+		return new QETerrainRS(null, 30, 30, 10, 10, isobaren, null, null, null, null);
 	}
 }

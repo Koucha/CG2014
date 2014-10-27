@@ -36,7 +36,7 @@ public class Main
 	 * provide a call-back function for initialization. Here we construct
 	 * a simple 3D scene and start a timer task to generate an animation.
 	 */ 
-	public final static class SimpleRenderPanel extends /* / GLRenderPanel /*/ SWRenderPanel //*/
+	public final static class SimpleRenderPanel extends /* *_/ GLRenderPanel /*/ SWRenderPanel //*/
 	{
 		/**
 		 * Initialization call-back. We initialize our renderer here.
@@ -60,7 +60,7 @@ public class Main
 			// Make a scene manager and add the object
 			sceneManager = new SimpleSceneManager();
 
-			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 1, 0, 0);
+			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 0.7f, 0.6f, 0.2f);
 			theThing.attachTo(sceneManager);
 			
 			// create camera
@@ -332,7 +332,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T3 - A1");
+		JFrame jframe = new JFrame("T3 - A2");
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window
@@ -349,6 +349,6 @@ public class Main
 
 	private static RenderShape generateNewTerrain()
 	{
-		return new QETerrainRS(null, 30, 30, 10, 10, isobaren, null, null, null, null);
+		return new QETerrainRS(null, 30, 30, 10, 6, isobaren, null, null, null, null);
 	}
 }

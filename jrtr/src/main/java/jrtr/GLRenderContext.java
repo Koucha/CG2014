@@ -41,6 +41,7 @@ public class GLRenderContext implements RenderContext {
 		// Some OpenGL initialization
 		gl = drawable.getGL().getGL3();
 		gl.glEnable(GL3.GL_DEPTH_TEST);
+		gl.glEnable(GL3.GL_CULL_FACE);
 		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		// Load and use the default shader

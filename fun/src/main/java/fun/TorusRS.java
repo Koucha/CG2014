@@ -63,11 +63,11 @@ public class TorusRS extends AbstractRenderShape
 			for(int j = 0; j < poloidalSegCNum; j++)
 			{
 				indices[6*(i*(poloidalSegCNum) + j)    ] = (i*(poloidalSegCNum + 1) + j);
-				indices[6*(i*(poloidalSegCNum) + j) + 1] = (i*(poloidalSegCNum + 1) + j) + 1;
-				indices[6*(i*(poloidalSegCNum) + j) + 2] = ((i + 1)*(poloidalSegCNum + 1) + j);
+				indices[6*(i*(poloidalSegCNum) + j) + 1] = ((i + 1)*(poloidalSegCNum + 1) + j);
+				indices[6*(i*(poloidalSegCNum) + j) + 2] = (i*(poloidalSegCNum + 1) + j) + 1;
 				indices[6*(i*(poloidalSegCNum) + j) + 3] = (i*(poloidalSegCNum + 1) + j) + 1;
-				indices[6*(i*(poloidalSegCNum) + j) + 4] = ((i + 1)*(poloidalSegCNum + 1) + j) + 1;
-				indices[6*(i*(poloidalSegCNum) + j) + 5] = ((i + 1)*(poloidalSegCNum + 1) + j);
+				indices[6*(i*(poloidalSegCNum) + j) + 4] = ((i + 1)*(poloidalSegCNum + 1) + j);
+				indices[6*(i*(poloidalSegCNum) + j) + 5] = ((i + 1)*(poloidalSegCNum + 1) + j) + 1;
 			}
 		}
 		

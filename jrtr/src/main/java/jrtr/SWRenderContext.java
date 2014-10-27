@@ -227,7 +227,7 @@ public class SWRenderContext implements RenderContext {
 			vercor.m10 = vertex2.x; vercor.m11 = vertex2.y; vercor.m12 = vertex2.w;
 			vercor.m20 = vertex3.x; vercor.m21 = vertex3.y; vercor.m22 = vertex3.w;
 			
-			if(vercor.determinant() < 0)	// backface culling
+			if(vercor.determinant() > 0)	// backface culling
 			{
 				return false;
 			}

@@ -1,6 +1,7 @@
 package jrtr;
 
 import jrtr.RenderContext;
+import jrtr.SWTexture.Interpolation;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -142,7 +143,8 @@ public class SWRenderContext implements RenderContext {
 					teco1 = new Vector2f(data[2*indices[i]], data[2*indices[i] + 1]);
 					teco2 = new Vector2f(data[2*indices[i + 1]], data[2*indices[i + 1] + 1]);
 					teco3 = new Vector2f(data[2*indices[i + 2]], data[2*indices[i + 2] + 1]);
-					//TODO
+					
+					triRenderer.setTexcor(teco1, teco2, teco3);
 					break;
 				case COLOR:
 					col1 = new Vector3f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2]);
@@ -173,6 +175,7 @@ public class SWRenderContext implements RenderContext {
 		private Matrix4f toPixelspace;
 		private Matrix3f invvercor;
 		private Vector3f eins;
+		private RenderItem renderItem;
 		
 		private Vector4f vertex1;
 		private Vector4f vertex2;
@@ -181,11 +184,15 @@ public class SWRenderContext implements RenderContext {
 		private Vector3f col1;
 		private Vector3f col2;
 		private Vector3f col3;
+		private Vector2f uv1;
+		private Vector2f uv2;
+		private Vector2f uv3;
 		
 		public TriRenderer(RenderItem renderItem, int optimisation)
 		{
 			valid = false;
 			this.optimisation = optimisation;
+			this.renderItem = renderItem;
 			
 			toPixelspace = new Matrix4f();
 			toPixelspace.m00 = colorBuffer.getWidth()/2.0f;
@@ -250,6 +257,13 @@ public class SWRenderContext implements RenderContext {
 			this.col3 = col3;
 		}
 		
+		public void setTexcor(Vector2f teco1, Vector2f teco2, Vector2f teco3)
+		{
+			this.uv1 = teco1;
+			this.uv2 = teco2;
+			this.uv3 = teco3;
+		}
+
 		public void render()
 		{
 			if(!valid)
@@ -454,26 +468,40 @@ public class SWRenderContext implements RenderContext {
 			{
 				zBuffer[x][y] = antiw;
 			
-				Vector3f rv = new Vector3f(col1.x*255, col2.x*255, col3.x*255);
-				Vector3f gv = new Vector3f(col1.y*255, col2.y*255, col3.y*255);
-				Vector3f bv = new Vector3f(col1.z*255, col2.z*255, col3.z*255);
+				Vector3f rv = new Vector3f(col1.x, col2.x, col3.x);
+				Vector3f gv = new Vector3f(col1.y, col2.y, col3.y);
+				Vector3f bv = new Vector3f(col1.z, col2.z, col3.z);
 
 				invvercor.transform(rv);
 				invvercor.transform(gv);
 				invvercor.transform(bv);
-				int r = calcCol(x, y, rv, antiw);
-				int g = calcCol(x, y, gv, antiw);
-				int b = calcCol(x, y, bv, antiw);
+				float r = projectInterpol(x, y, rv, antiw);
+				float g = projectInterpol(x, y, gv, antiw);
+				float b = projectInterpol(x, y, bv, antiw);
+				
+				Vector3f uve = new Vector3f(uv1.x, uv2.x, uv3.x);
+				Vector3f vve = new Vector3f(uv1.y, uv2.y, uv3.y);
+
+				invvercor.transform(uve);
+				invvercor.transform(vve);
+				//* Switch here //TODO
+				Vector3f texcol = ((SWTexture)(renderItem.getShape().getMaterial().texture)).interpol(projectInterpol(x, y, uve, antiw), projectInterpol(x, y, vve, antiw), Interpolation.NEAREST_NEIGHBOR);
+				/*/
+				Vector3f texcol = ((SWTexture)(renderItem.getShape().getMaterial().texture)).interpol(projectInterpol(x, y, uve, antiw), projectInterpol(x, y, vve, antiw), Interpolation.BILINEAR);
+				// */
+				r = r*texcol.x;
+				g = g*texcol.y;
+				b = b*texcol.z;
 				
 				colorBackBuffer.setRGB(x, y, (new Color(r, g, b)).getRGB());
 			}
 		}
 		
-		private int calcCol(int x, int y, Vector3f col, float antiw)
+		private float projectInterpol(int x, int y, Vector3f col, float antiw)
 		{
-			int c = (int) ((col.x*x + col.y*y + col.z)/antiw);
+			float c = (col.x*x + col.y*y + col.z)/antiw;
 			c = (c < 0)?(0):(c);
-			c = (c > 255)?(255):(c);
+			c = (c > 1)?(1):(c);
 			return c;
 		}
 		

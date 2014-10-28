@@ -1,5 +1,7 @@
 package fun;
 
+import java.io.IOException;
+
 import jrtr.*;
 
 public class TorusRS extends AbstractRenderShape
@@ -25,6 +27,9 @@ public class TorusRS extends AbstractRenderShape
 
 		// The vertex colors
 		float c[] = new float[3*vertexCount];
+		
+		// The vertex colors
+		float uv[] = new float[2*vertexCount];
 
 		// The triangles (three vertex indices for each triangle)
 		int indices[] = new int[6*vertexCount];
@@ -32,11 +37,11 @@ public class TorusRS extends AbstractRenderShape
 		float phi = 0, theta = 0, tempLen = 0;
 		for(int i = 0; i < toroidalSegNum + 1; i++)
 		{
-			phi = (float) (2*Math.PI*i/(toroidalSegNum /*+ 1*/)*sliceAngle);
+			phi = (float) (Math.PI + 2*Math.PI*i/(toroidalSegNum)*sliceAngle);
 			
 			for(int j = 0; j < poloidalSegCNum + 1; j++)
 			{
-				theta = (float) (2*Math.PI*j/(poloidalSegCNum /*+ 1*/));
+				theta = (float) (Math.PI + 2*Math.PI*j/(poloidalSegCNum));
 				v[3*(i*(poloidalSegCNum + 1) + j)    ] = (float) ((majorRad + minorRad*Math.cos(theta))*Math.sin(phi));
 				v[3*(i*(poloidalSegCNum + 1) + j) + 1] = (float) (minorRad*Math.sin(theta));
 				v[3*(i*(poloidalSegCNum + 1) + j) + 2] = (float) ((majorRad + minorRad*Math.cos(theta))*Math.cos(phi));
@@ -52,9 +57,12 @@ public class TorusRS extends AbstractRenderShape
 				n[3*(i*(poloidalSegCNum + 1) + j) + 1] = n[3*(i*(poloidalSegCNum + 1) + j) + 1] / tempLen;
 				n[3*(i*(poloidalSegCNum + 1) + j) + 2] = n[3*(i*(poloidalSegCNum + 1) + j) + 2] / tempLen;
 				
-				c[3*(i*(poloidalSegCNum + 1) + j)    ] = c1;
-				c[3*(i*(poloidalSegCNum + 1) + j) + 1] = c2;
-				c[3*(i*(poloidalSegCNum + 1) + j) + 2] = (i%4 < 2)?(0):(1);//c3;
+				c[3*(i*(poloidalSegCNum + 1) + j)    ] = (i%4 < 2)?(0.2f):(1);//c1;
+				c[3*(i*(poloidalSegCNum + 1) + j) + 1] = (i%4 < 2)?(0.2f):(1);//c2;
+				c[3*(i*(poloidalSegCNum + 1) + j) + 2] = (i%4 < 2)?(0.2f):(1);//c3;
+				
+				uv[2*(i*(poloidalSegCNum + 1) + j)    ] = ((float)i)/toroidalSegNum;
+				uv[2*(i*(poloidalSegCNum + 1) + j) + 1] = ((float)j)/poloidalSegCNum;
 			}
 		}
 		
@@ -77,10 +85,20 @@ public class TorusRS extends AbstractRenderShape
 		vertexData.addElement(c, VertexData.Semantic.COLOR, 3);
 		vertexData.addElement(v, VertexData.Semantic.POSITION, 3);
 		vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
-		//vertexData.addElement(mesh.getTexcords(), VertexData.Semantic.TEXCOORD, 2);
+		vertexData.addElement(uv, VertexData.Semantic.TEXCOORD, 2);
 		
 		vertexData.addIndices(indices);
 		
 		shape = new Shape(vertexData);
+		
+		Material mat = new Material();
+		mat.texture = new SWTexture();
+		try {
+			mat.texture.load("../textures/square.jpg");
+			shape.setMaterial(mat);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

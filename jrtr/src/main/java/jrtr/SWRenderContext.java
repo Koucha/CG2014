@@ -484,8 +484,11 @@ public class SWRenderContext implements RenderContext {
 
 				invvercor.transform(uve);
 				invvercor.transform(vve);
-				
+				//* Switch here //TODO
 				Vector3f texcol = ((SWTexture)(renderItem.getShape().getMaterial().texture)).interpol(projectInterpol(x, y, uve, antiw), projectInterpol(x, y, vve, antiw), Interpolation.NEAREST_NEIGHBOR);
+				/*/
+				Vector3f texcol = ((SWTexture)(renderItem.getShape().getMaterial().texture)).interpol(projectInterpol(x, y, uve, antiw), projectInterpol(x, y, vve, antiw), Interpolation.BILINEAR);
+				// */
 				r = r*texcol.x;
 				g = g*texcol.y;
 				b = b*texcol.z;

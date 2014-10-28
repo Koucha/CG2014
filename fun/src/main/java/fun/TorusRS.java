@@ -57,9 +57,9 @@ public class TorusRS extends AbstractRenderShape
 				n[3*(i*(poloidalSegCNum + 1) + j) + 1] = n[3*(i*(poloidalSegCNum + 1) + j) + 1] / tempLen;
 				n[3*(i*(poloidalSegCNum + 1) + j) + 2] = n[3*(i*(poloidalSegCNum + 1) + j) + 2] / tempLen;
 				
-				c[3*(i*(poloidalSegCNum + 1) + j)    ] = c1;
-				c[3*(i*(poloidalSegCNum + 1) + j) + 1] = c2;
-				c[3*(i*(poloidalSegCNum + 1) + j) + 2] = (i%4 < 2)?(0):(1);//c3;
+				c[3*(i*(poloidalSegCNum + 1) + j)    ] = (i%4 < 2)?(0.2f):(1);//c1;
+				c[3*(i*(poloidalSegCNum + 1) + j) + 1] = (i%4 < 2)?(0.2f):(1);//c2;
+				c[3*(i*(poloidalSegCNum + 1) + j) + 2] = (i%4 < 2)?(0.2f):(1);//c3;
 				
 				uv[2*(i*(poloidalSegCNum + 1) + j)    ] = ((float)i)/toroidalSegNum;
 				uv[2*(i*(poloidalSegCNum + 1) + j) + 1] = ((float)j)/poloidalSegCNum;

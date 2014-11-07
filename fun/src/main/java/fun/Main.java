@@ -22,7 +22,9 @@ public class Main
 	static Shader normalColShader;
 	static SimpleSceneManager sceneManager;
 	static FlyingCam flyCam;
+	
 	static RenderShape theThing;
+	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
 	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;

@@ -23,8 +23,6 @@ public class Main
 	static SimpleSceneManager sceneManager;
 	static FlyingCam flyCam;
 	
-	static RenderShape theThing;
-	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
 	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;
@@ -38,7 +36,7 @@ public class Main
 	 * provide a call-back function for initialization. Here we construct
 	 * a simple 3D scene and start a timer task to generate an animation.
 	 */ 
-	public final static class SimpleRenderPanel extends /* *_/ GLRenderPanel /*/ SWRenderPanel //*/
+	public final static class SimpleRenderPanel extends GLRenderPanel
 	{
 		/**
 		 * Initialization call-back. We initialize our renderer here.
@@ -61,13 +59,57 @@ public class Main
 								
 			// Make a scene manager and add the object
 			sceneManager = new SimpleSceneManager();
-
-			//*
-			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 0.7f, 0.6f, 0.2f);
-			/*/
-			theThing = new TestRS(null);
-			//*/
+			
+			Matrix4f manip = new Matrix4f();
+			RenderShape theThing = new ZylinderRS(null, 20, 5, 4, 1, 1, 1);
+			manip.setIdentity();
+			manip.setTranslation(new Vector3f(10, 6, 0));
+			theThing.setTransMat(manip);
+			theThing.updateMat();
 			theThing.attachTo(sceneManager);
+			
+			manip = new Matrix4f();
+			theThing = new TestRS(null);
+			manip.setIdentity();
+			manip.setTranslation(new Vector3f(0, 20, 0));
+			theThing.setTransMat(manip);
+			theThing.updateMat();
+			theThing.attachTo(sceneManager);
+			
+			manip = new Matrix4f();
+			theThing = new ObjRS(null, "../obj/teapot_texcoords.obj", 10);
+			manip.setIdentity();
+			manip.setTranslation(new Vector3f(0, -10, 0));
+			theThing.setTransMat(manip);
+			theThing.updateMat();
+			theThing.attachTo(sceneManager);
+			
+			manip = new Matrix4f();
+			theThing = new ObjRS(null, "../obj/dragon_smooth.obj", 10);
+			manip.setIdentity();
+			manip.setTranslation(new Vector3f(-10, 6, 0));
+			theThing.setTransMat(manip);
+			theThing.updateMat();
+			theThing.attachTo(sceneManager);
+
+			
+			Light light = new Light();
+			light.position = new Vector3f(5, 5, 10);
+			light.diffuse = new Vector3f(0.3f,0.3f,0.3f);
+			light.type = Light.Type.POINT;
+			sceneManager.addLight(light);
+			
+			light = new Light();
+			light.position = new Vector3f(0, -10, 0);
+			light.diffuse = new Vector3f(0.1f,0.1f,0.3f);
+			light.type = Light.Type.POINT;
+			sceneManager.addLight(light);
+			
+			light = new Light();
+			light.position = new Vector3f(-10, 3, 3);
+			light.diffuse = new Vector3f(0.3f,0.1f,0.1f);
+			light.type = Light.Type.POINT;
+			sceneManager.addLight(light);
 			
 			// create camera
 			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
@@ -76,17 +118,6 @@ public class Main
 			renderContext.setSceneManager(sceneManager);
 			sceneManager.setCamera(flyCam);
 			sceneManager.setFrustum(new Frustum(0.01f, 100, 1, 60));
-			
-			// Load a shader
-		    normalColShader = renderContext.makeShader();
-		    try {
-		    	normalColShader.load("../jrtr/shaders/normal_col.vert", "../jrtr/shaders/normal_col.frag");
-		    } catch(Exception e) {
-		    	System.out.print("Problem with shader:\n");
-		    	System.out.print(e.getMessage());
-		    }
-		    
-		    renderContext.useShader(normalColShader);
 
 			// Register a timer task
 		    Timer timer = new Timer();
@@ -283,16 +314,6 @@ public class Main
 			switch(e.getKeyChar())
 			{
 				case 'R': {
-					sceneManager.clearShapes();
-					
-					Matrix4f temp = new Matrix4f();
-					
-					theThing = generateNewTerrain();
-					theThing.attachTo(sceneManager);
-					temp.setIdentity();
-					temp.setTranslation(new Vector3f(-15.1f,0,15.1f));
-					theThing.setTransMat(temp);
-					theThing.updateMat();
 					break;
 				}
 				case 'f': {
@@ -338,7 +359,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T3 - A3");
+		JFrame jframe = new JFrame("T4 - A1");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window
@@ -351,10 +372,5 @@ public class Main
 	    
 	    jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    jframe.setVisible(true); // show window
-	}
-
-	private static RenderShape generateNewTerrain()
-	{
-		return new QETerrainRS(null, 30, 30, 10, 6, isobaren, null, null, null, null);
 	}
 }

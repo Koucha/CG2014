@@ -46,8 +46,8 @@ public class ZylinderRS extends AbstractRenderShape
 			n[36*i +  3] = 0; n[36*i +  4] =  1; n[36*i +  5] = 0;
 			n[36*i +  6] = 0; n[36*i +  7] =  1; n[36*i +  8] = 0;
 			tc[24*i     ] = 0.85f; tc[24*i +  1] = 0.15f;
-			tc[24*i +  2] = 0.85f + 0.15f*nx1; tc[24*i +  3] = 0.15f + 0.15f*ny1;
-			tc[24*i +  4] = 0.85f + 0.15f*nx2; tc[24*i +  5] = 0.15f + 0.15f*ny2;
+			tc[24*i +  2] = 0.85f + 0.15f*nx1; tc[24*i +  3] = 0.15f - 0.15f*ny1;
+			tc[24*i +  4] = 0.85f + 0.15f*nx2; tc[24*i +  5] = 0.15f - 0.15f*ny2;
 
 			v[36*i +  9] = x2; v[36*i + 10] =  height; v[36*i + 11] = y2; indices[12*i +  3] = 12*i +  3;
 			v[36*i + 12] = x1; v[36*i + 13] =  height; v[36*i + 14] = y1; indices[12*i +  4] = 12*i +  4;
@@ -75,9 +75,9 @@ public class ZylinderRS extends AbstractRenderShape
 			n[36*i + 27] = 0; n[36*i + 28] = -1; n[36*i + 29] = 0;
 			n[36*i + 30] = 0; n[36*i + 31] = -1; n[36*i + 32] = 0;
 			n[36*i + 33] = 0; n[36*i + 34] = -1; n[36*i + 35] = 0;
-			tc[24*i + 18] = 0.15f; tc[24*i + 19] = 0.15f;
+			tc[24*i + 18] = 0.15f + 0.15f*nx2; tc[24*i + 19] = 0.15f - 0.15f*ny2;
 			tc[24*i + 20] = 0.15f + 0.15f*nx1; tc[24*i + 21] = 0.15f - 0.15f*ny1;
-			tc[24*i + 22] = 0.15f + 0.15f*nx2; tc[24*i + 23] = 0.15f - 0.15f*ny2;
+			tc[24*i + 22] = 0.15f; tc[24*i + 23] = 0.15f;
 			
 			x1 = x2;
 			y1 = y2;
@@ -104,7 +104,7 @@ public class ZylinderRS extends AbstractRenderShape
 		shape = new Shape(vertexData);
 		
 		Material mat = new Material();
-		mat.diffuse = new Vector3f(0.2f,0.2f,0.2f);
+		mat.diffuse = new Vector3f(1,1,1);
 		mat.texture = Main.renderContext.makeTexture();
 		try {
 			mat.texture.load("../textures/textur1.png");

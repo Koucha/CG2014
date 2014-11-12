@@ -23,6 +23,10 @@ public class Main
 	static SimpleSceneManager sceneManager;
 	static FlyingCam flyCam;
 	
+	static LightBulb lb1;
+	static LightBulb lb2;
+	static LightBulb lb3;
+	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
 	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;
@@ -83,7 +87,7 @@ public class Main
 			theThing.setTransMat(manip);
 			theThing.updateMat();
 			theThing.attachTo(sceneManager);
-			
+			/*
 			manip = new Matrix4f();
 			theThing = new ObjRS(null, "../obj/dragon_smooth.obj", 10);
 			manip.setIdentity();
@@ -91,25 +95,16 @@ public class Main
 			theThing.setTransMat(manip);
 			theThing.updateMat();
 			theThing.attachTo(sceneManager);
-
+			*/
 			
-			Light light = new Light();
-			light.position = new Vector3f(5, 5, 10);
-			light.diffuse = new Vector3f(0.3f,0.3f,0.3f);
-			light.type = Light.Type.POINT;
-			sceneManager.addLight(light);
+			lb1 = new LightBulb( new Vector3f(0.3f, 0, 0), new Vector3f(1,0,0) );
+			lb1.attachTo(sceneManager);
 			
-			light = new Light();
-			light.position = new Vector3f(0, -10, 0);
-			light.diffuse = new Vector3f(0.1f,0.1f,0.3f);
-			light.type = Light.Type.POINT;
-			sceneManager.addLight(light);
+			lb2 = new LightBulb( new Vector3f(0, 1, -2), new Vector3f(0,1,0) );
+			lb2.attachTo(sceneManager);
 			
-			light = new Light();
-			light.position = new Vector3f(-10, 3, 3);
-			light.diffuse = new Vector3f(0.3f,0.1f,0.1f);
-			light.type = Light.Type.POINT;
-			sceneManager.addLight(light);
+			lb3 = new LightBulb( new Vector3f(-2, 0, -0.2f), new Vector3f(0,0,1) );
+			lb3.attachTo(sceneManager);
 			
 			// create camera
 			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
@@ -322,19 +317,15 @@ public class Main
 					break;
 				}
 				case '1': {
-					stepsize = BASESTEP/2;
+					lb1.switchOnOff();
 					break;
 				}
 				case '2': {
-					stepsize = BASESTEP;
+					lb2.switchOnOff();
 					break;
 				}
 				case '3': {
-					stepsize = BASESTEP*2;
-					break;
-				}
-				case '4': {
-					stepsize = BASESTEP*3;
+					lb3.switchOnOff();
 					break;
 				}
 				case 'i': {

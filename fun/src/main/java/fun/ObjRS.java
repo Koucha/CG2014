@@ -20,7 +20,7 @@ public class ObjRS extends AbstractRenderShape {
 			shape = new Shape(ObjReader.read(filename, scale, Main.renderContext));
 			
 			Material mat = new Material();
-			mat.diffuse = new Vector3f(0.2f,0.2f,0.2f);
+			mat.diffuse = new Vector3f(1,1,1);
 			mat.texture = Main.renderContext.makeTexture();
 			try {
 				mat.texture.load("C:\\Users\\Florian\\Desktop\\Kriss_AGAIN_D8_by_Viddharta.jpg");

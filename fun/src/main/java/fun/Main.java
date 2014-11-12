@@ -97,13 +97,13 @@ public class Main
 			theThing.attachTo(sceneManager);
 			*/
 			
-			lb1 = new LightBulb( new Vector3f(0.3f, 0, 0), new Vector3f(1,0,0) );
+			lb1 = new LightBulb( new Vector3f(3f, 0, 0), new Vector3f(1,0,0) );
 			lb1.attachTo(sceneManager);
 			
-			lb2 = new LightBulb( new Vector3f(0, 1, -2), new Vector3f(0,1,0) );
+			lb2 = new LightBulb( new Vector3f(0, 3f, 0), new Vector3f(0,1,0) );
 			lb2.attachTo(sceneManager);
 			
-			lb3 = new LightBulb( new Vector3f(-2, 0, -0.2f), new Vector3f(0,0,1) );
+			lb3 = new LightBulb( new Vector3f(-3f, 0, 0), new Vector3f(0,0,1) );
 			lb3.attachTo(sceneManager);
 			
 			// create camera

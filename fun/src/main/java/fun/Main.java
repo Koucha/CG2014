@@ -21,11 +21,9 @@ public class Main
 	static RenderContext renderContext;
 	static Shader normalColShader;
 	static SimpleSceneManager sceneManager;
-	static FlyingCam flyCam;
+	static Camera flyCam;
 	
-	static LightBulb lb1;
-	static LightBulb lb2;
-	static LightBulb lb3;
+	static Material mat;
 	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
@@ -64,50 +62,17 @@ public class Main
 			// Make a scene manager and add the object
 			sceneManager = new SimpleSceneManager();
 			
+			mat = new Material();
 			Matrix4f manip = new Matrix4f();
-			RenderShape theThing = new ZylinderRS(null, 20, 5, 4, 1, 1, 1);
+			TestRS theThing = new TestRS(null, mat);
 			manip.setIdentity();
-			manip.setTranslation(new Vector3f(10, 6, 0));
+			manip.setTranslation(new Vector3f(0, 0, -40));
 			theThing.setTransMat(manip);
 			theThing.updateMat();
 			theThing.attachTo(sceneManager);
-			
-			manip = new Matrix4f();
-			theThing = new TestRS(null);
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, 20, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
-			
-			manip = new Matrix4f();
-			theThing = new ObjRS(null, "../obj/teapot_texcoords.obj", 10, 10);
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, -10, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
-			/*
-			manip = new Matrix4f();
-			theThing = new ObjRS(null, "../obj/dragon_smooth.obj", 10, 5);
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(-10, 6, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
-			*/
-			
-			lb1 = new LightBulb( new Vector3f(3f, 0, 0), new Vector3f(1,0,0), new Vector3f(0.7f,0,0) );
-			lb1.attachTo(sceneManager);
-			
-			lb2 = new LightBulb( new Vector3f(0, 3f, 0), new Vector3f(0,1,0), new Vector3f(0,0.7f,0) );
-			lb2.attachTo(sceneManager);
-			
-			lb3 = new LightBulb( new Vector3f(-3f, 0, 0), new Vector3f(0,0,1), new Vector3f(0,0,0.7f) );
-			lb3.attachTo(sceneManager);
 			
 			// create camera
-			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
+			flyCam = new Camera(new Vector3f(0,0,20), new Vector3f(0,0,0), new Vector3f(0,1,0));
 
 			// Add the scene to the renderer
 			renderContext.setSceneManager(sceneManager);
@@ -142,28 +107,22 @@ public class Main
 			{
 				notYetWorking = false;	// repaint blockieren für den fall, dass es länger dauert als die refreshrate
 				
-				flyCam.setDirection(xAngle, yAngle);
+				//flyCam.setDirection(xAngle, yAngle);
 				
-				if(keyDownW && !keyDownSpace)
+				if(keyDownW)
 				{
-					flyCam.moveFwd(stepsize);
-				}else if(keyDownS && !keyDownSpace)
-				{
-					flyCam.moveFwd(-stepsize);
-				}else if(keyDownW)
-				{
-					flyCam.moveUp(stepsize);
+					mat.ix = mat.ix - 0.001f;
 				}else if(keyDownS)
 				{
-					flyCam.moveUp(-stepsize);
+					mat.ix = mat.ix + 0.001f;
 				}
 				
 				if(keyDownD)
 				{
-					flyCam.moveSdw(-stepsize);
+					mat.iy = mat.iy - 0.01f;
 				}else if(keyDownA)
 				{
-					flyCam.moveSdw(stepsize);
+					mat.iy = mat.iy + 0.01f;
 				}
 	    		
 	    		// Trigger redrawing of the render window
@@ -316,18 +275,6 @@ public class Main
 					mouseValid = false;
 					break;
 				}
-				case '1': {
-					lb1.switchOnOff();
-					break;
-				}
-				case '2': {
-					lb2.switchOnOff();
-					break;
-				}
-				case '3': {
-					lb3.switchOnOff();
-					break;
-				}
 				case 'i': {
 					isobaren = !isobaren;
 					break;
@@ -350,7 +297,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T4 - A3");	//TODO change, always.
+		JFrame jframe = new JFrame("T4 - A4");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window

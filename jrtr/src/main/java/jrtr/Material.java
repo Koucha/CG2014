@@ -13,7 +13,8 @@ public class Material {
 	public Vector3f ambient;
 	public float shininess;
 	public Texture texture;
-	public Texture glossTex;
+	public float ix;
+	public float iy;
 	public Shader shader;
 	
 	public Material()
@@ -24,5 +25,7 @@ public class Material {
 		shininess = 1.f;
 		texture = null;
 		shader = null;
+		ix = 0.5f;
+		iy = 0.3f;
 	}
 }

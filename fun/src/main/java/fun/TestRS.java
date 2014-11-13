@@ -8,11 +8,11 @@ import jrtr.*;
 
 public class TestRS extends AbstractRenderShape
 {
-	public TestRS(RenderShape parent)
+	public TestRS(RenderShape parent, Material mat)
 	{
 		super(parent);
 		
-		float v[] = {-5,-5,0, 5,-5,0, 5,5,0, -5,5,0};
+		float v[] = {-30,-30,0, 30,-30,0, 30,30,0, -30,30,0};
 		float n[] = {0,0,1, 0,0,1, 0,0,1, 0,0,1};
 		float c[] = {1,1,1, 1,1,1, 1,1,1, 1,1,1};
 		float t[] = {0,0, 1,0, 1,1, 0,1};
@@ -26,7 +26,6 @@ public class TestRS extends AbstractRenderShape
 		
 		shape = new Shape(vertexData);
 		
-		Material mat = new Material();
 		mat.diffuse = new Vector3f(1,1,1);
 		mat.ambient = new Vector3f(0.1f,0.1f,0.1f);
 		mat.specular = new Vector3f(1,1,1);
@@ -34,12 +33,6 @@ public class TestRS extends AbstractRenderShape
 		mat.texture = Main.renderContext.makeTexture();
 		try {
 			mat.texture.load("../textures/plant2.jpg");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		mat.glossTex = Main.renderContext.makeTexture();
-		try {
-			mat.glossTex.load("../textures/wood.jpg");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

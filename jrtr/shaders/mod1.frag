@@ -2,58 +2,54 @@
 // GLSL version 1.50
 // Fragment shader for diffuse shading in combination with a texture map
 
-#define MAX_LIGHTS 4
+#pragma optionNV (unroll all)
 
-// Uniform variables passed in from host program
-uniform sampler2D myTexture;
-uniform sampler2D myGloss;
-
-uniform vec3 lightDiffuse[MAX_LIGHTS];
-uniform vec3 lightAmbient[MAX_LIGHTS];
-uniform vec4 lightDirection[MAX_LIGHTS];
-uniform vec4 lightPosition[MAX_LIGHTS];
-uniform int lightType[MAX_LIGHTS];	//0: directional, 1: point
-uniform int nLights;
-
-uniform float shininess;
+uniform float ix;
+uniform float iy;
 
 // Variables passed in from the vertex shader
-in vec3 frag_normal;
-in vec4 frag_viewPosition;
 in vec2 frag_texcoord;
 
 // Output variable, will be written to framebuffer automatically
 out vec4 frag_shaded;
 
+vec4 color(float a);
+
 void main()
 {
-	vec3 suma = vec3(0,0,0);
-	vec3 sumb = vec3(0,0,0);
-	vec3 normal = normalize(frag_normal);
-	
-	for(int i = 0; i < nLights; i++)
-	{
-		vec4 L = -lightDirection[i];
-		vec3 rad = lightDiffuse[i];
-		
-		if(lightType[i] == 1)
-		{
-			L = lightPosition[i] - frag_viewPosition;
-			float dist = length(L);
-			rad = 100*rad/(dist*dist);
-		}
-		
-		L = normalize(L);
-		vec4 e = -normalize(frag_viewPosition);
-		vec4 R = -reflect(L, vec4(normal, 0));
-		
-		float ndot = max(dot(vec4(normal, 0), L), 0);
-		float rdote = max(0, dot(normalize(R), e));
-		
-		suma = suma + rad * ndot + lightAmbient[i];
-		sumb = sumb + rad * pow(rdote, shininess);
-		
-	}
-	frag_shaded = vec4(suma, 0) * texture(myTexture, frag_texcoord) + vec4(sumb, 0) * texture(myGloss, frag_texcoord);
+    vec2 z;
+    z.x = 4.0 * (frag_texcoord.x - 0.5);
+    z.y = 4.0 * (frag_texcoord.y - 0.5);
+
+    int i;
+    float x = (z.x * z.x - z.y * z.y) + ix;
+    float y = (z.y * z.x + z.x * z.y) + iy;
+    for(i=0; i<10000; i++)
+    {
+        if((x * x + y * y) > 4.0) break;
+        z.x = x;
+        z.y = y;
+        
+        x = (z.x * z.x - z.y * z.y) + ix;
+        y = (z.y * z.x + z.x * z.y) + iy;
+    }
+
+    frag_shaded = color((i == 10000 ? 0.0 : float(i%101)) / 100.0);
 }
 
+vec4 color(float a)
+{
+	if(a > 0.5)
+	{
+		a = 1 - a;
+	}
+	
+	vec4 col = vec4(0,0,0,0);
+	
+	float si = sin((2*a)*3.1415926);
+	
+	col.x = si;
+	col.y = si*si;
+	
+	return col;
+}

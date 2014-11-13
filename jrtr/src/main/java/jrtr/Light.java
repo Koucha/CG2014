@@ -8,7 +8,7 @@ public class Light {
 	
 	// Types of light sources
 	public enum Type {
-		DIRECTIONAL, POINT, SPOT
+		DIRECTIONAL, POINT, SPOT, NONE
 	}
 
 	public Light()

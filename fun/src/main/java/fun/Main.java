@@ -21,8 +21,10 @@ public class Main
 	static RenderContext renderContext;
 	static Shader normalColShader;
 	static SimpleSceneManager sceneManager;
-	static FlyingCam flyCam;
-	static RenderShape theThing;
+	static Camera flyCam;
+	
+	static Material mat;
+	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
 	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;
@@ -36,7 +38,7 @@ public class Main
 	 * provide a call-back function for initialization. Here we construct
 	 * a simple 3D scene and start a timer task to generate an animation.
 	 */ 
-	public final static class SimpleRenderPanel extends /* *_/ GLRenderPanel /*/ SWRenderPanel //*/
+	public final static class SimpleRenderPanel extends GLRenderPanel
 	{
 		/**
 		 * Initialization call-back. We initialize our renderer here.
@@ -59,32 +61,23 @@ public class Main
 								
 			// Make a scene manager and add the object
 			sceneManager = new SimpleSceneManager();
-
-			//*
-			theThing = new TorusRS(null, 40, 30, 14, 7, 360, 0.7f, 0.6f, 0.2f);
-			/*/
-			theThing = new TestRS(null);
-			//*/
+			
+			mat = new Material();
+			Matrix4f manip = new Matrix4f();
+			TestRS theThing = new TestRS(null, mat);
+			manip.setIdentity();
+			manip.setTranslation(new Vector3f(0, 0, -40));
+			theThing.setTransMat(manip);
+			theThing.updateMat();
 			theThing.attachTo(sceneManager);
 			
 			// create camera
-			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
+			flyCam = new Camera(new Vector3f(0,0,20), new Vector3f(0,0,0), new Vector3f(0,1,0));
 
 			// Add the scene to the renderer
 			renderContext.setSceneManager(sceneManager);
 			sceneManager.setCamera(flyCam);
 			sceneManager.setFrustum(new Frustum(0.01f, 100, 1, 60));
-			
-			// Load a shader
-		    normalColShader = renderContext.makeShader();
-		    try {
-		    	normalColShader.load("../jrtr/shaders/normal_col.vert", "../jrtr/shaders/normal_col.frag");
-		    } catch(Exception e) {
-		    	System.out.print("Problem with shader:\n");
-		    	System.out.print(e.getMessage());
-		    }
-		    
-		    renderContext.useShader(normalColShader);
 
 			// Register a timer task
 		    Timer timer = new Timer();
@@ -114,28 +107,22 @@ public class Main
 			{
 				notYetWorking = false;	// repaint blockieren für den fall, dass es länger dauert als die refreshrate
 				
-				flyCam.setDirection(xAngle, yAngle);
+				//flyCam.setDirection(xAngle, yAngle);
 				
-				if(keyDownW && !keyDownSpace)
+				if(keyDownW)
 				{
-					flyCam.moveFwd(stepsize);
-				}else if(keyDownS && !keyDownSpace)
-				{
-					flyCam.moveFwd(-stepsize);
-				}else if(keyDownW)
-				{
-					flyCam.moveUp(stepsize);
+					mat.ix = mat.ix - 0.001f;
 				}else if(keyDownS)
 				{
-					flyCam.moveUp(-stepsize);
+					mat.ix = mat.ix + 0.001f;
 				}
 				
 				if(keyDownD)
 				{
-					flyCam.moveSdw(-stepsize);
+					mat.iy = mat.iy - 0.01f;
 				}else if(keyDownA)
 				{
-					flyCam.moveSdw(stepsize);
+					mat.iy = mat.iy + 0.01f;
 				}
 	    		
 	    		// Trigger redrawing of the render window
@@ -281,37 +268,11 @@ public class Main
 			switch(e.getKeyChar())
 			{
 				case 'R': {
-					sceneManager.clearShapes();
-					
-					Matrix4f temp = new Matrix4f();
-					
-					theThing = generateNewTerrain();
-					theThing.attachTo(sceneManager);
-					temp.setIdentity();
-					temp.setTranslation(new Vector3f(-15.1f,0,15.1f));
-					theThing.setTransMat(temp);
-					theThing.updateMat();
 					break;
 				}
 				case 'f': {
 					fixedF = !fixedF;
 					mouseValid = false;
-					break;
-				}
-				case '1': {
-					stepsize = BASESTEP/2;
-					break;
-				}
-				case '2': {
-					stepsize = BASESTEP;
-					break;
-				}
-				case '3': {
-					stepsize = BASESTEP*2;
-					break;
-				}
-				case '4': {
-					stepsize = BASESTEP*3;
 					break;
 				}
 				case 'i': {
@@ -336,7 +297,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T3 - A3");
+		JFrame jframe = new JFrame("T4 - A4");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window
@@ -349,10 +310,5 @@ public class Main
 	    
 	    jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    jframe.setVisible(true); // show window
-	}
-
-	private static RenderShape generateNewTerrain()
-	{
-		return new QETerrainRS(null, 30, 30, 10, 6, isobaren, null, null, null, null);
 	}
 }

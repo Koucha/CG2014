@@ -12,7 +12,7 @@ import jrtr.Shape;
 
 public class ObjRS extends AbstractRenderShape {
 
-	public ObjRS(RenderShape parent, String filename, float scale)
+	public ObjRS(RenderShape parent, String filename, float scale, float shininess)
 	{
 		super(parent);
 
@@ -21,6 +21,9 @@ public class ObjRS extends AbstractRenderShape {
 			
 			Material mat = new Material();
 			mat.diffuse = new Vector3f(1,1,1);
+			mat.ambient = new Vector3f(0.1f,0.1f,0.1f);
+			mat.specular = new Vector3f(1,1,1);
+			mat.shininess = shininess;
 			mat.texture = Main.renderContext.makeTexture();
 			try {
 				mat.texture.load("../textures/wood.jpg");

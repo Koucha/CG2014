@@ -87,7 +87,7 @@ public class Main
 			theThing.setTransMat(manip);
 			theThing.updateMat();
 			theThing.attachTo(sceneManager);
-			
+			/*
 			manip = new Matrix4f();
 			theThing = new ObjRS(null, "../obj/dragon_smooth.obj", 10, 5);
 			manip.setIdentity();
@@ -95,7 +95,7 @@ public class Main
 			theThing.setTransMat(manip);
 			theThing.updateMat();
 			theThing.attachTo(sceneManager);
-			
+			*/
 			
 			lb1 = new LightBulb( new Vector3f(3f, 0, 0), new Vector3f(1,0,0), new Vector3f(0.7f,0,0) );
 			lb1.attachTo(sceneManager);
@@ -350,7 +350,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T4 - A2");	//TODO change, always.
+		JFrame jframe = new JFrame("T4 - A3");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window

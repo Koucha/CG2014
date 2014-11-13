@@ -13,6 +13,7 @@ public class Material {
 	public Vector3f ambient;
 	public float shininess;
 	public Texture texture;
+	public Texture glossTex;
 	public Shader shader;
 	
 	public Material()

@@ -6,6 +6,7 @@
 
 // Uniform variables passed in from host program
 uniform sampler2D myTexture;
+uniform sampler2D myGloss;
 
 uniform vec3 lightDiffuse[MAX_LIGHTS];
 uniform vec3 lightAmbient[MAX_LIGHTS];
@@ -14,9 +15,6 @@ uniform vec4 lightPosition[MAX_LIGHTS];
 uniform int lightType[MAX_LIGHTS];	//0: directional, 1: point
 uniform int nLights;
 
-uniform vec3 mat_drc;
-uniform vec3 mat_src;
-uniform vec3 mat_arc;
 uniform float shininess;
 
 // Variables passed in from the vertex shader
@@ -52,13 +50,10 @@ void main()
 		float ndot = max(dot(vec4(normal, 0), L), 0);
 		float rdote = max(0, dot(normalize(R), e));
 		
-		vec3 diffuseTerm = mat_drc * ndot;
-		vec3 specularTerm = mat_src * pow(rdote, shininess);
-		vec3 ambientTerm = mat_arc * lightAmbient[i];
-		suma = suma + rad * diffuseTerm + ambientTerm;
-		sumb = sumb + rad * specularTerm;
+		suma = suma + rad * ndot + lightAmbient[i];
+		sumb = sumb + rad * pow(rdote, shininess);
 		
 	}
-	frag_shaded = vec4(suma, 0) /*** texture(myTexture, frag_texcoord)*/ + vec4(sumb, 0);
+	frag_shaded = vec4(suma, 0) * texture(myTexture, frag_texcoord) + vec4(sumb, 0) * texture(myGloss, frag_texcoord);
 }
 

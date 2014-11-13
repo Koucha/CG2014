@@ -296,6 +296,18 @@ public class GLRenderContext implements RenderContext {
 				id = gl.glGetUniformLocation(activeShaderID, "myTexture");
 				gl.glUniform1i(id, 0);	// The variable in the shader needs to be set to the desired texture unit, i.e., 0
 			}
+			// Activate the texture, if the material has one
+			if(m.glossTex != null) {
+				// OpenGL calls to activate the texture 
+				gl.glActiveTexture(GL3.GL_TEXTURE1);	// Work with texture unit 1
+				gl.glEnable(GL3.GL_TEXTURE_2D);
+				gl.glBindTexture(GL3.GL_TEXTURE_2D, ((GLTexture)m.glossTex).getId());
+				gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+				gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+				// We assume the texture in the shader is called "myTexture"
+				id = gl.glGetUniformLocation(activeShaderID, "myGloss");
+				gl.glUniform1i(id, 1);	// The variable in the shader needs to be set to the desired texture unit, i.e., 0
+			}
 			
 			
 			// Pass a default light source to shader

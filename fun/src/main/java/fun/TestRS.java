@@ -28,6 +28,9 @@ public class TestRS extends AbstractRenderShape
 		
 		Material mat = new Material();
 		mat.diffuse = new Vector3f(1,1,1);
+		mat.ambient = new Vector3f(0.1f,0.1f,0.1f);
+		mat.specular = new Vector3f(1,1,1);
+		mat.shininess = 5;
 		mat.texture = Main.renderContext.makeTexture();
 		try {
 			mat.texture.load("C:\\Users\\Florian\\Desktop\\Kriss_AGAIN_D8_by_Viddharta.jpg");

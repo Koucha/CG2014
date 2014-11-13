@@ -16,7 +16,7 @@ public class LightBulb
 	private Material mat;
 	private Vector3f diffuseColor;
 
-	public LightBulb(Vector3f pos, Vector3f diffuseColor)
+	public LightBulb(Vector3f pos, Vector3f diffuseColor, Vector3f ambientColor)
 	{
 		this.diffuseColor = diffuseColor;
 		
@@ -24,6 +24,7 @@ public class LightBulb
 		light.position = pos;
 		light.diffuse = diffuseColor;
 		light.type = Light.Type.POINT;
+		light.ambient = ambientColor;
 
 		// The vertex positions of the cube
 		float v[] = {0+pos.x,1+pos.y,0+pos.z, 0+pos.x,0+pos.y,1+pos.z, 1+pos.x,0+pos.y,0+pos.z, 0+pos.x,0+pos.y,-1+pos.z, -1+pos.x,0+pos.y,0+pos.z, 0+pos.x,-1+pos.y,0+pos.z};

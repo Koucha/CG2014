@@ -356,10 +356,18 @@ public class GLRenderContext implements RenderContext {
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");
 					
-					lightString = "lightColour[" + nLights + "]";
+					lightString = "lightDiffuse[" + nLights + "]";
 					id = gl.glGetUniformLocation(activeShaderID, lightString);
 					if(id!=-1)
 						gl.glUniform3f(id, l.diffuse.x, l.diffuse.y, l.diffuse.z);		// Set light colour
+// Only for debugging
+//					else
+//						System.out.print("Could not get location of uniform variable " + lightString + "\n");
+					
+					lightString = "lightAmbient[" + nLights + "]";
+					id = gl.glGetUniformLocation(activeShaderID, lightString);
+					if(id!=-1)
+						gl.glUniform3f(id, l.ambient.x, l.ambient.y, l.ambient.z);		// Set light colour
 // Only for debugging
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");
@@ -387,6 +395,27 @@ public class GLRenderContext implements RenderContext {
 			id = gl.glGetUniformLocation(activeShaderID, "mat_drc");
 			if(id!=-1)
 				gl.glUniform3f(id, m.diffuse.x, m.diffuse.y, m.diffuse.z);		// Set diffuse reflection coefficient
+//			else
+//				System.out.print("Could not get location of uniform variable mat_drc\n");
+
+			// Pass ambient reflection coefficient
+			id = gl.glGetUniformLocation(activeShaderID, "mat_arc");
+			if(id!=-1)
+				gl.glUniform3f(id, m.ambient.x, m.ambient.y, m.ambient.z);		// Set diffuse reflection coefficient
+//			else
+//				System.out.print("Could not get location of uniform variable mat_drc\n");
+
+			// Pass specular reflection coefficient
+			id = gl.glGetUniformLocation(activeShaderID, "mat_src");
+			if(id!=-1)
+				gl.glUniform3f(id, m.specular.x, m.specular.y, m.specular.z);		// Set diffuse reflection coefficient
+//			else
+//				System.out.print("Could not get location of uniform variable mat_drc\n");
+
+			// Pass phong shininess
+			id = gl.glGetUniformLocation(activeShaderID, "shininess");
+			if(id!=-1)
+				gl.glUniform1f(id, m.shininess);		// Set diffuse reflection coefficient
 //			else
 //				System.out.print("Could not get location of uniform variable mat_drc\n");
 			

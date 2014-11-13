@@ -59,6 +59,6 @@ void main()
 		sumb = sumb + rad * specularTerm;
 		
 	}
-	frag_shaded = vec4(suma, 0) /** texture(myTexture, frag_texcoord)*/ + vec4(sumb, 0);
+	frag_shaded = vec4(suma, 0) /*** texture(myTexture, frag_texcoord)*/ + vec4(sumb, 0);
 }
 

@@ -26,7 +26,13 @@ public class ObjRS extends AbstractRenderShape {
 			mat.shininess = shininess;
 			mat.texture = Main.renderContext.makeTexture();
 			try {
-				mat.texture.load("C:\\Users\\Florian\\Desktop\\Kriss_AGAIN_D8_by_Viddharta.jpg");
+				mat.texture.load("../textures/wood.jpg");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			mat.glossTex = Main.renderContext.makeTexture();
+			try {
+				mat.glossTex.load("../textures/square.jpg");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

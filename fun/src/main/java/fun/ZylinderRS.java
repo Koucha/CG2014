@@ -114,6 +114,12 @@ public class ZylinderRS extends AbstractRenderShape
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		mat.glossTex = Main.renderContext.makeTexture();
+		try {
+			mat.glossTex.load("../textures/square.jpg");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Shader shader = Main.renderContext.makeShader();
 	    try {
 	    	shader.load("../jrtr/shaders/mod1.vert", "../jrtr/shaders/mod1.frag");

@@ -33,7 +33,13 @@ public class TestRS extends AbstractRenderShape
 		mat.shininess = 5;
 		mat.texture = Main.renderContext.makeTexture();
 		try {
-			mat.texture.load("C:\\Users\\Florian\\Desktop\\Kriss_AGAIN_D8_by_Viddharta.jpg");
+			mat.texture.load("../textures/plant2.jpg");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		mat.glossTex = Main.renderContext.makeTexture();
+		try {
+			mat.glossTex.load("../textures/wood.jpg");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

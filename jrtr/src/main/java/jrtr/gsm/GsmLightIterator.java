@@ -1,12 +1,12 @@
 package jrtr.gsm;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
 import jrtr.Light;
-import jrtr.RenderItem;
 
 public class GsmLightIterator implements Iterator<Light>
 {
@@ -63,7 +63,7 @@ public class GsmLightIterator implements Iterator<Light>
 	{
 		if(nodeStack.empty())
 		{
-			return null;
+			throw new NoSuchElementException();
 		}
 		
 		StackElement stckel = nodeStack.pop();

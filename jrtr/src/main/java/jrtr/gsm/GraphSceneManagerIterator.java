@@ -1,5 +1,6 @@
 package jrtr.gsm;
 
+import java.util.NoSuchElementException;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
@@ -62,7 +63,7 @@ public class GraphSceneManagerIterator implements SceneManagerIterator
 	{
 		if(nodeStack.empty())
 		{
-			return null;
+			throw new NoSuchElementException();
 		}
 		
 		StackElement stckel = nodeStack.pop();

@@ -23,6 +23,8 @@ public class Light {
 		spotDirection = new Vector3f(0.f,0.f,1.f);
 		spotExponent = 0.f;
 		spotCutoff = 180.f;
+		transform = new Matrix4f();
+		transform.setIdentity();
 	}
 
 	public Vector3f direction;
@@ -34,4 +36,5 @@ public class Light {
 	public float spotExponent;
 	public float spotCutoff;
 	public Type type;
+	public Matrix4f transform;
 }

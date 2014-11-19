@@ -1,16 +1,35 @@
 package jrtr.gsm;
 
-import java.util.List;
+import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
-import jrtr.Light;
-import jrtr.Shape;
-
+/**
+ * Basic Node containing scene data
+ * 
+ * @author Florian
+ */
 public interface Node
 {
-	public Shape getShape();
-	public Light getLight();
-	public Matrix4f getTFMat();
-	public List<Node> getChildren();
+	/**
+	 * Checks if the Node represents an Object of classtype class.
+	 * And performs all Node specific actions on the nodeStack.
+	 * 
+	 * @param classtype class that should be matched
+	 * @param nodeStack stack used for iteration
+	 * @param tfMatOnStack matrix belonging to this Node
+	 * @return true if the Node represents an Object of classtype class
+	 */
+	public <type> boolean isAndProgress(Class<type> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
+	
+	/**
+	 * Performs all Node specific actions on the nodeStack.
+	 * And gets the Object represented by the Node.
+	 * 
+	 * @param classtype class that should be matched
+	 * @param nodeStack stack used for iteration
+	 * @param tfMatOnStack matrix belonging to this Node
+	 * @return the Object of classtype class represented by the Node or null if the classtype doesn't match
+	 */
+	public <type> type getAndProgress(Class<type> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
 }

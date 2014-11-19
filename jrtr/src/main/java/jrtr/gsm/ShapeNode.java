@@ -1,6 +1,8 @@
 package jrtr.gsm;
 
-import jrtr.Light;
+import javax.vecmath.Matrix4f;
+
+import jrtr.RenderItem;
 import jrtr.Shape;
 
 public class ShapeNode extends Leaf
@@ -28,8 +30,28 @@ public class ShapeNode extends Leaf
 		return this;
 	}
 
-	public Light getLight()
+	@Override
+	protected <type> boolean is(Class<type> classtype, Matrix4f tfMatOnStack)
 	{
-		return null;
+		if(classtype == RenderItem.class)
+		{
+			return true;
+		}else
+		{
+			return false;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected <type> type get(Class<type> classtype, Matrix4f tfMatOnStack)
+	{
+		if(classtype == RenderItem.class)	// classtype = Shape
+		{
+			return (type) new RenderItem(shape, tfMatOnStack);
+		}else
+		{
+			return null;
+		}
 	}
 }

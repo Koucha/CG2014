@@ -4,6 +4,7 @@ import jrtr.*;
 import jrtr.gsm.GraphSceneManager;
 import jrtr.gsm.LightNode;
 import jrtr.gsm.Node;
+import jrtr.gsm.ShapeMaterialNode;
 import jrtr.gsm.ShapeNode;
 import jrtr.gsm.TransformGroup;
 
@@ -73,7 +74,7 @@ public class Main
 			
 			List<Node> rootlist = new ArrayList<Node>(5);
 			
-			Node node = new ShapeNode(ZylinderRS.generate(20, 5, 4));
+			Node node = new ShapeMaterialNode(ZylinderRS.getInstance(), ZylTexMat.getInstance());
 			List<Node> list = new ArrayList<Node>(1);
 			list.add(node);
 			Matrix4f manip = new Matrix4f();
@@ -82,7 +83,7 @@ public class Main
 			node = new TransformGroup(manip).setChildren(list);
 			rootlist.add(node);
 			
-			node = new ShapeNode(TestRS.generate());
+			node = new ShapeMaterialNode(TestRS.getInstance(), WoodMat.getInstance());
 			list = new ArrayList<Node>(1);
 			list.add(node);
 			manip = new Matrix4f();
@@ -91,10 +92,10 @@ public class Main
 			node = new TransformGroup(manip).setChildren(list);
 			rootlist.add(node);
 			
-			node = new ShapeNode(ObjRS.generate("../obj/teapot_texcoords.obj", 10, 10));
+			node = new ShapeMaterialNode(ObjRS.getInstanceTeaPot(), WoodMat.getInstance());
 			list = new ArrayList<Node>(3);
 			list.add(node);
-			lb1 = new LightBulb( new Vector3f(0, 0, 12), new Vector3f(0.2f,0.2f,0.2f), new Vector3f(0.05f,0.045f,0.03f) );
+			lb1 = new LightBulb( new Vector3f(0, 0, 12), new Vector3f(0.8f,0.8f,0.8f), new Vector3f(0.05f,0.045f,0.03f) );
 			node = new LightNode(lb1.getLight());
 			list.add(node);
 			node = new ShapeNode(lb1.getShape());

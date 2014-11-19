@@ -1,18 +1,16 @@
 package fun;
 
-import java.io.IOException;
-
-import javax.vecmath.Vector3f;
-
 import jrtr.*;
 
-public class TestRS
+public final class TestRS
 {
-	public static Shape generate()
+	private static Shape instance = null;
+	
+	private static Shape generate()
 	{
 		Shape shape = null;
 		
-		float v[] = {-5,-5,0, 5,-5,0, 5,5,0, -5,5,0};
+		float v[] = {-0.5f,-0.5f,0, 0.5f,-0.5f,0, 0.5f,0.5f,0, -0.5f,0.5f,0};
 		float n[] = {0,0,1, 0,0,1, 0,0,1, 0,0,1};
 		float c[] = {1,1,1, 1,1,1, 1,1,1, 1,1,1};
 		float t[] = {0,0, 1,0, 1,1, 0,1};
@@ -26,33 +24,15 @@ public class TestRS
 		
 		shape = new Shape(vertexData);
 		
-		Material mat = new Material();
-		mat.diffuse = new Vector3f(1,1,1);
-		mat.ambient = new Vector3f(0.1f,0.1f,0.1f);
-		mat.specular = new Vector3f(1,1,1);
-		mat.shininess = 5;
-		mat.texture = Main.renderContext.makeTexture();
-		try {
-			mat.texture.load("../textures/plant2.jpg");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		mat.glossTex = Main.renderContext.makeTexture();
-		try {
-			mat.glossTex.load("../textures/wood.jpg");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Shader shader = Main.renderContext.makeShader();
-	    try {
-	    	shader.load("../jrtr/shaders/mod1.vert", "../jrtr/shaders/mod1.frag");
-	    	mat.shader = shader;
-	    } catch(Exception e) {
-	    	System.out.print("Problem with shader:\n");
-	    	System.out.print(e.getMessage());
-	    }
-		shape.setMaterial(mat);
-		
 		return shape;
+	}
+	
+	public static Shape getInstance()
+	{
+		if(instance == null)
+		{
+			instance = generate();
+		}
+		return instance;
 	}
 }

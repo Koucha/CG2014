@@ -1,17 +1,13 @@
 package fun;
 
-import java.io.IOException;
-
-import javax.vecmath.Vector3f;
-
 import jrtr.*;
 
-public class ZylinderRS
+public final class ZylinderRS
 {
-	public static Shape generate(int numSides, float height, float radius)
+	private static Shape instance = null;
+	
+	private static Shape generate(int numSides, float height, float radius)
 	{
-		Shape shape = null;
-		
 		assert(numSides > 2);
 		
 		int vertexCount = 12*numSides;
@@ -101,35 +97,15 @@ public class ZylinderRS
 		
 		vertexData.addIndices(indices);
 		
-		shape = new Shape(vertexData);
-		
-		Material mat = new Material();
-		mat.diffuse = new Vector3f(1,1,1);
-		mat.ambient = new Vector3f(0.1f,0.1f,0.1f);
-		mat.specular = new Vector3f(1,1,1);
-		mat.shininess = 5;
-		mat.texture = Main.renderContext.makeTexture();
-		try {
-			mat.texture.load("../textures/textur1.png");
-		} catch (IOException e) {
-			e.printStackTrace();
+		return new Shape(vertexData);
+	}
+	
+	public static Shape getInstance()
+	{
+		if(instance == null)
+		{
+			instance = generate(30, 0.5f, 0.5f);
 		}
-		mat.glossTex = Main.renderContext.makeTexture();
-		try {
-			mat.glossTex.load("../textures/square.jpg");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Shader shader = Main.renderContext.makeShader();
-	    try {
-	    	shader.load("../jrtr/shaders/mod1.vert", "../jrtr/shaders/mod1.frag");
-	    	mat.shader = shader;
-	    } catch(Exception e) {
-	    	System.out.print("Problem with shader:\n");
-	    	System.out.print(e.getMessage());
-	    }
-		shape.setMaterial(mat);
-		
-		return shape;
+		return instance;
 	}
 }

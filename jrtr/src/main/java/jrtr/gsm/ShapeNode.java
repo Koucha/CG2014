@@ -48,10 +48,15 @@ public class ShapeNode extends Leaf
 	{
 		if(classtype == RenderItem.class)	// classtype = Shape
 		{
-			return (T) new RenderItem(shape, tfMatOnStack);
+			return (T) makeRenderItem(tfMatOnStack);
 		}else
 		{
 			return null;
 		}
+	}
+	
+	protected RenderItem makeRenderItem(Matrix4f tfMatOnStack)
+	{
+		return new RenderItem(shape, tfMatOnStack);
 	}
 }

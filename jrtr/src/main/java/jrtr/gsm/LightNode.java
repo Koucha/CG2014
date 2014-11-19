@@ -30,7 +30,7 @@ public class LightNode extends Leaf
 	}
 
 	@Override
-	protected <type> boolean is(Class<type> classtype, Matrix4f tfMatOnStack)
+	protected <T> boolean is(Class<T> classtype, Matrix4f tfMatOnStack)
 	{
 		if(classtype == Light.class)
 		{
@@ -43,12 +43,12 @@ public class LightNode extends Leaf
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <type> type get(Class<type> classtype, Matrix4f tfMatOnStack)
+	protected <T> T get(Class<T> classtype, Matrix4f tfMatOnStack)
 	{
 		if(classtype == Light.class)	// type = Light
 		{
 			light.transform = tfMatOnStack;
-			return (type) light;
+			return (T) light;
 		}else
 		{
 			return null;

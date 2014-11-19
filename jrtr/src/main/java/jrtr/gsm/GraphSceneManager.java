@@ -12,7 +12,7 @@ public class GraphSceneManager implements SceneManagerInterface
 	
 	public SceneManagerIterator iterator()
 	{
-		return new GsmShapeIterator(root);
+		return new GraphSceneIteratorIterator(root);
 	}
 
 	public Iterator<Light> lightIterator()

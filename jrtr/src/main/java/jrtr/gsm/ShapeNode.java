@@ -31,7 +31,7 @@ public class ShapeNode extends Leaf
 	}
 
 	@Override
-	protected <type> boolean is(Class<type> classtype, Matrix4f tfMatOnStack)
+	protected <T> boolean is(Class<T> classtype, Matrix4f tfMatOnStack)
 	{
 		if(classtype == RenderItem.class)
 		{
@@ -44,11 +44,11 @@ public class ShapeNode extends Leaf
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <type> type get(Class<type> classtype, Matrix4f tfMatOnStack)
+	protected <T> T get(Class<T> classtype, Matrix4f tfMatOnStack)
 	{
 		if(classtype == RenderItem.class)	// classtype = Shape
 		{
-			return (type) new RenderItem(shape, tfMatOnStack);
+			return (T) new RenderItem(shape, tfMatOnStack);
 		}else
 		{
 			return null;

@@ -20,7 +20,7 @@ public interface Node
 	 * @param tfMatOnStack matrix belonging to this Node
 	 * @return true if the Node represents an Object of classtype class
 	 */
-	public <type> boolean isAndProgress(Class<type> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
+	public <T> boolean isAndProgress(Class<T> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
 	
 	/**
 	 * Performs all Node specific actions on the nodeStack.
@@ -31,5 +31,5 @@ public interface Node
 	 * @param tfMatOnStack matrix belonging to this Node
 	 * @return the Object of classtype class represented by the Node or null if the classtype doesn't match
 	 */
-	public <type> type getAndProgress(Class<type> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
+	public <T> T getAndProgress(Class<T> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
 }

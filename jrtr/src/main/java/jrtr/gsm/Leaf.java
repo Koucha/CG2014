@@ -12,12 +12,12 @@ import javax.vecmath.Matrix4f;
  */
 public abstract class Leaf implements Node
 {
-	public <type> boolean isAndProgress(Class<type> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	public <T> boolean isAndProgress(Class<T> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
 	{
 		return is(classtype, tfMatOnStack);
 	}
 
-	public <type> type getAndProgress(Class<type> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	public <T> T getAndProgress(Class<T> classtype, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
 	{
 		return get(classtype, tfMatOnStack);
 	}
@@ -29,7 +29,7 @@ public abstract class Leaf implements Node
 	 * @param nodeStack stack used for iteration
 	 * @return true if the Node represents an Object of classtype class
 	 */
-	protected abstract <type> boolean is(Class<type> classtype, Matrix4f tfMatOnStack);
+	protected abstract <T> boolean is(Class<T> classtype, Matrix4f tfMatOnStack);
 	
 	/**
 	 * Gets the Object represented by the Node.
@@ -38,5 +38,5 @@ public abstract class Leaf implements Node
 	 * @param nodeStack stack used for iteration
 	 * @return the Object of classtype class represented by the Node or null if the classtype doesn't match
 	 */
-	protected abstract <type> type get(Class<type> classtype, Matrix4f tfMatOnStack);
+	protected abstract <T> T get(Class<T> classtype, Matrix4f tfMatOnStack);
 }

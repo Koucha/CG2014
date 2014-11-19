@@ -355,8 +355,9 @@ public class GLRenderContext implements RenderContext {
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");
 					
-					Vector3f pos = new Vector3f(l.position);
-					//sceneManager.getCamera().getCameraMatrix().transform(pos);
+					Vector4f pos = new Vector4f(l.position.x, l.position.y, l.position.z, 1);
+					l.transform.transform(pos);
+					sceneManager.getCamera().getCameraMatrix().transform(pos);
 					//System.out.println("light " + nLights + " is " + pos.toString());
 					
 					// Pass light position to shader, we assume the shader stores it in an array "lightPosition[]"

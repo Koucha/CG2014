@@ -6,11 +6,11 @@ import javax.vecmath.Vector3f;
 
 import jrtr.*;
 
-public class ZylinderRS extends AbstractRenderShape
+public class ZylinderRS
 {
-	public ZylinderRS(RenderShape parent, int numSides, float height, float radius, float c1, float c2, float c3)
+	public static Shape generate(int numSides, float height, float radius)
 	{
-		super(parent);
+		Shape shape = null;
 		
 		assert(numSides > 2);
 		
@@ -86,7 +86,7 @@ public class ZylinderRS extends AbstractRenderShape
 			
 			for(int j = 0; j < 12; j++)
 			{
-				c[36*i + 3*j] =  c1; c[36*i + 3*j + 1] =  c2; c[36*i + 3*j + 2] =  c3;
+				c[36*i + 3*j] =  1; c[36*i + 3*j + 1] =  1; c[36*i + 3*j + 2] =  1;
 			}
 			
 		}
@@ -129,5 +129,7 @@ public class ZylinderRS extends AbstractRenderShape
 	    	System.out.print(e.getMessage());
 	    }
 		shape.setMaterial(mat);
+		
+		return shape;
 	}
 }

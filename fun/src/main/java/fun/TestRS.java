@@ -6,11 +6,11 @@ import javax.vecmath.Vector3f;
 
 import jrtr.*;
 
-public class TestRS extends AbstractRenderShape
+public class TestRS
 {
-	public TestRS(RenderShape parent)
+	public static Shape generate()
 	{
-		super(parent);
+		Shape shape = null;
 		
 		float v[] = {-5,-5,0, 5,-5,0, 5,5,0, -5,5,0};
 		float n[] = {0,0,1, 0,0,1, 0,0,1, 0,0,1};
@@ -52,5 +52,7 @@ public class TestRS extends AbstractRenderShape
 	    	System.out.print(e.getMessage());
 	    }
 		shape.setMaterial(mat);
+		
+		return shape;
 	}
 }

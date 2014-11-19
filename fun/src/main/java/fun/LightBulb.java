@@ -6,7 +6,6 @@ import jrtr.Light;
 import jrtr.Material;
 import jrtr.Shader;
 import jrtr.Shape;
-import jrtr.SimpleSceneManager;
 import jrtr.VertexData;
 
 public class LightBulb
@@ -71,9 +70,13 @@ public class LightBulb
 		}
 	}
 	
-	public void attachTo(SimpleSceneManager sceneManager)
+	public Shape getShape()
 	{
-		sceneManager.addShape(shape);
-		sceneManager.addLight(light);
+		return shape;
+	}
+	
+	public Light getLight()
+	{
+		return light;
 	}
 }

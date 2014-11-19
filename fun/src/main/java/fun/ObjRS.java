@@ -6,16 +6,15 @@ import javax.vecmath.Vector3f;
 
 import jrtr.Material;
 import jrtr.ObjReader;
-import jrtr.SWTexture;
 import jrtr.Shader;
 import jrtr.Shape;
 
-public class ObjRS extends AbstractRenderShape {
-
-	public ObjRS(RenderShape parent, String filename, float scale, float shininess)
+public class ObjRS
+{
+	public static Shape generate(String filename, float scale, float shininess)
 	{
-		super(parent);
-
+		Shape shape = null;
+		
 		try {
 			shape = new Shape(ObjReader.read(filename, scale, Main.renderContext));
 			
@@ -50,6 +49,8 @@ public class ObjRS extends AbstractRenderShape {
 			e1.printStackTrace();
 			System.out.println(e1.getLocalizedMessage());
 		}
+		
+		return shape;
 	}
 
 }

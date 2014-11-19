@@ -1,6 +1,11 @@
 package fun;
 
 import jrtr.*;
+import jrtr.gsm.GraphSceneManager;
+import jrtr.gsm.LightNode;
+import jrtr.gsm.Node;
+import jrtr.gsm.ShapeNode;
+import jrtr.gsm.TransformGroup;
 
 import javax.swing.*;
 
@@ -8,6 +13,8 @@ import java.awt.event.*;
 
 import javax.vecmath.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,7 +27,7 @@ public class Main
 	static RenderPanel renderPanel;
 	static RenderContext renderContext;
 	static Shader normalColShader;
-	static SimpleSceneManager sceneManager;
+	static GraphSceneManager sceneManager;
 	static FlyingCam flyCam;
 	
 	static LightBulb lb1;
@@ -62,49 +69,45 @@ public class Main
 			isobaren = false;
 								
 			// Make a scene manager and add the object
-			sceneManager = new SimpleSceneManager();
+			sceneManager = new GraphSceneManager();
 			
+			List<Node> rootlist = new ArrayList<Node>(5);
+			
+			Node node = new ShapeNode(ZylinderRS.generate(20, 5, 4));
+			List<Node> list = new ArrayList<Node>(1);
+			list.add(node);
 			Matrix4f manip = new Matrix4f();
-			RenderShape theThing = new ZylinderRS(null, 20, 5, 4, 1, 1, 1);
 			manip.setIdentity();
 			manip.setTranslation(new Vector3f(10, 6, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
+			node = new TransformGroup(manip).setChildren(list);
+			rootlist.add(node);
 			
+			node = new ShapeNode(TestRS.generate());
+			list = new ArrayList<Node>(1);
+			list.add(node);
 			manip = new Matrix4f();
-			theThing = new TestRS(null);
 			manip.setIdentity();
 			manip.setTranslation(new Vector3f(0, 20, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
+			node = new TransformGroup(manip).setChildren(list);
+			rootlist.add(node);
 			
+			node = new ShapeNode(ObjRS.generate("../obj/teapot_texcoords.obj", 10, 10));
+			list = new ArrayList<Node>(3);
+			list.add(node);
+			lb1 = new LightBulb( new Vector3f(0, 0, 12), new Vector3f(0.2f,0.2f,0.2f), new Vector3f(0.05f,0.045f,0.03f) );
+			node = new LightNode(lb1.getLight());
+			list.add(node);
+			node = new ShapeNode(lb1.getShape());
+			list.add(node);
 			manip = new Matrix4f();
-			theThing = new ObjRS(null, "../obj/teapot_texcoords.obj", 10, 10);
 			manip.setIdentity();
 			manip.setTranslation(new Vector3f(0, -10, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
-			/*
-			manip = new Matrix4f();
-			theThing = new ObjRS(null, "../obj/dragon_smooth.obj", 10, 5);
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(-10, 6, 0));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
-			*/
+			node = new TransformGroup(manip).setChildren(list);
+			rootlist.add(node);
 			
-			lb1 = new LightBulb( new Vector3f(3f, 0, 0), new Vector3f(1,0,0), new Vector3f(0.7f,0,0) );
-			lb1.attachTo(sceneManager);
+			node = new TransformGroup().setChildren(rootlist);
 			
-			lb2 = new LightBulb( new Vector3f(0, 3f, 0), new Vector3f(0,1,0), new Vector3f(0,0.7f,0) );
-			lb2.attachTo(sceneManager);
-			
-			lb3 = new LightBulb( new Vector3f(-3f, 0, 0), new Vector3f(0,0,1), new Vector3f(0,0,0.7f) );
-			lb3.attachTo(sceneManager);
+			sceneManager.setGraph(node);
 			
 			// create camera
 			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
@@ -350,7 +353,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T4 - A3");	//TODO change, always.
+		JFrame jframe = new JFrame("T5 - A1");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window

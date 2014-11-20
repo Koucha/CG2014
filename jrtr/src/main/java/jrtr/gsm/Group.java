@@ -54,13 +54,13 @@ public abstract class Group implements Node
 		return this;
 	}
 
-	public <T> boolean isAndProgress(T classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	public <T> boolean isAndProgress(Class<T> classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
 	{
 		progress(nodeStack, tfMatOnStack);
 		return false;
 	}
 
-	public <T> T getAndProgress(T classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	public <T> T getAndProgress(Class<T> classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
 	{
 		progress(nodeStack, tfMatOnStack);
 		return null;

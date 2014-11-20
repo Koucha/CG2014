@@ -5,22 +5,19 @@ import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
-public class GraphSceneIterator<T>
+public class GraphSceneIterator
 {
 	Stack<StackElement> nodeStack;
-	T classreference;
 	
-	public GraphSceneIterator(Node root, T classreference)
+	public GraphSceneIterator(Node root)
 	{
 		nodeStack = new Stack<StackElement>();
 		Matrix4f identity = new Matrix4f();
 		identity.setIdentity();
 		nodeStack.push(new StackElement(root, identity));
-		
-		this.classreference = classreference;
 	}
 
-	public boolean hasNext()
+	public <T> boolean hasNext(Class<T> classreference)
 	{
 		if(nodeStack.empty())
 		{
@@ -43,7 +40,7 @@ public class GraphSceneIterator<T>
 		return false;
 	}
 
-	public T next()
+	public <T> T next(Class<T> classreference)
 	{
 		if(nodeStack.empty())
 		{

@@ -31,9 +31,9 @@ public class ShapeNode extends Leaf
 	}
 
 	@Override
-	protected <T> boolean is(T classreference)
+	protected <T> boolean is(Class<T> classreference)
 	{
-		if(classreference instanceof RenderItem)
+		if(classreference.isAssignableFrom(RenderItem.class))
 		{
 			return true;
 		}else
@@ -44,9 +44,9 @@ public class ShapeNode extends Leaf
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected <T> T get(T classreference, Matrix4f tfMatOnStack)
+	protected <T> T get(Class<T> classreference, Matrix4f tfMatOnStack)
 	{
-		if(classreference instanceof RenderItem)
+		if(classreference.isAssignableFrom(RenderItem.class))
 		{
 			return (T) makeRenderItem(tfMatOnStack);
 		}else

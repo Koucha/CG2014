@@ -2,7 +2,7 @@ package fun;
 
 import jrtr.*;
 
-public final class TestRS
+public final class PlaneRS
 {
 	private static Shape instance = null;
 	

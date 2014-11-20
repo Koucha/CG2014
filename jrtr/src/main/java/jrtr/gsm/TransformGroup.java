@@ -2,7 +2,9 @@ package jrtr.gsm;
 
 import java.util.Stack;
 
+import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 
 /**
  * Group whose children can be transformed via transformation matrix tfMat
@@ -32,6 +34,42 @@ public class TransformGroup extends Group
 	public TransformGroup setTFMat(Matrix4f tfMat)
 	{
 		this.tfMat = tfMat;
+		return this;
+	}
+	
+	public TransformGroup scale(float s)
+	{
+		Matrix4f mat = new Matrix4f();
+		mat.setIdentity();
+		
+		mat.setScale(s);
+		
+		tfMat.mul(mat, tfMat);
+		
+		return this;
+	}
+	
+	public TransformGroup translate(Vector3f v)
+	{
+		Matrix4f mat = new Matrix4f();
+		mat.setIdentity();
+		
+		mat.setTranslation(v);;
+		
+		tfMat.mul(mat, tfMat);
+		
+		return this;
+	}
+	
+	public TransformGroup rotate(Vector3f axis, float angle)
+	{
+		Matrix4f mat = new Matrix4f();
+		mat.setIdentity();
+		
+		mat.setRotation(new AxisAngle4f(axis, angle));
+		
+		tfMat.mul(mat, tfMat);
+		
 		return this;
 	}
 

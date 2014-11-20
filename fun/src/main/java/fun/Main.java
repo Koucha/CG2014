@@ -83,7 +83,7 @@ public class Main
 			node = new TransformGroup(manip).setChildren(list);
 			rootlist.add(node);
 			
-			node = new ShapeMaterialNode(TestRS.getInstance(), WoodMat.getInstance());
+			node = new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance());
 			list = new ArrayList<Node>(1);
 			list.add(node);
 			manip = new Matrix4f();

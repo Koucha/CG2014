@@ -5,21 +5,21 @@ import jrtr.SceneManagerIterator;
 
 public class GsmRenderItemIterator implements SceneManagerIterator
 {
-	private GraphSceneIterator intern;
+	private GraphSceneIterator<RenderItem> intern;
 	
 	public GsmRenderItemIterator(Node root)
 	{
-		intern = new GraphSceneIterator(root);
+		intern = new GraphSceneIterator<RenderItem>(root, new RenderItem(null, null));
 	}
 	
 	public boolean hasNext()
 	{
-		return intern.hasNext(RenderItem.class);
+		return intern.hasNext();
 	}
 
 	public RenderItem next()
 	{
-		return intern.next(RenderItem.class);
+		return intern.next();
 	}
 
 }

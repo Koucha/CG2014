@@ -1,25 +1,26 @@
 package jrtr.gsm;
 
 import java.util.Iterator;
+
 import jrtr.Light;
 
 public class GsmLightIterator implements Iterator<Light>
 {
-	private GraphSceneIterator intern;
+	private GraphSceneIterator<Light> intern;
 	
 	public GsmLightIterator(Node root)
 	{
-		intern = new GraphSceneIterator(root);
+		intern = new GraphSceneIterator<Light>(root, new Light());
 	}
 	
 	public boolean hasNext()
 	{
-		return intern.hasNext(Light.class);
+		return intern.hasNext();
 	}
 
 	public Light next()
 	{
-		return intern.next(Light.class);
+		return intern.next();
 	}
 
 	public void remove()

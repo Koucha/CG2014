@@ -42,9 +42,6 @@ public class TransformGroup extends Group
 		
 		mat.mul(tfMat);
 		
-		for(Node node:getChildren())
-		{
-			nodeStack.push(new StackElement(node, mat));
-		}
+		super.progress(nodeStack, mat);
 	}
 }

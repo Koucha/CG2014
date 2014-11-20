@@ -35,6 +35,24 @@ public abstract class Group implements Node
 		this.children = children;
 		return this;
 	}
+	
+	public Group add(Node node)
+	{
+		children.add(node);
+		return this;
+	}
+	
+	public Group remove(Node node)
+	{
+		children.remove(node);
+		return this;
+	}
+	
+	public Group clear()
+	{
+		children.clear();
+		return this;
+	}
 
 	public <T> boolean isAndProgress(T classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
 	{
@@ -54,5 +72,11 @@ public abstract class Group implements Node
 	 * @param nodeStack stack used for iteration
 	 * @param tfMatOnStack matrix belonging to this Node
 	 */
-	protected abstract void progress(Stack<StackElement> nodeStack, Matrix4f tfMatOnStack);
+	protected void progress(Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	{
+		for(Node node:getChildren())
+		{
+			nodeStack.push(new StackElement(node, tfMatOnStack));
+		}
+	}
 }

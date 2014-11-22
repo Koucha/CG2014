@@ -72,48 +72,30 @@ public class Main
 			// Make a scene manager and add the object
 			sceneManager = new GraphSceneManager();
 			
-			List<Node> rootlist = new ArrayList<Node>(5);
+			TransformGroup root = new TransformGroup();
 			
-			Node node = new ShapeMaterialNode(ZylinderRS.getInstance(), ZylTexMat.getInstance());
-			List<Node> list = new ArrayList<Node>(1);
-			list.add(node);
-			Matrix4f manip = new Matrix4f();
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(2, 1, 0));
-			node = new TransformGroup(manip).setChildren(list);
-			rootlist.add(node);
+			TransformGroup skybox = new TransformGroup();
+			skybox.scale(100);
+			skybox.add(new ShapeMaterialNode(SkyBoxRS.getInstance(), SkyMat.getInstance()));
+			root.add(skybox);
 			
-			node = new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance());
-			list = new ArrayList<Node>(1);
-			list.add(node);
-			manip = new Matrix4f();
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, 2, 0));
-			node = new TransformGroup(manip).setChildren(list);
-			rootlist.add(node);
+			Light light = new Light();
+			light.diffuse = new Vector3f(0.1f, 0.1f, 0.1f);
+			light.ambient = new Vector3f(0.01f, 0.01f, 0.01f);
+			light.direction = new Vector3f(0.1f, -0.9899f, -0.1f);
+			light.type = Light.Type.DIRECTIONAL;
+			root.add(new LightNode(light));
 			
-			node = new ShapeMaterialNode(ObjRS.getInstanceTeaPot(), WoodMat.getInstance());
-			list = new ArrayList<Node>(3);
-			list.add(node);
-			lb1 = new LightBulb( new Vector3f(-2, 1, 2), new Vector3f(0.2f,0.2f,0.2f), new Vector3f(0.05f,0.045f,0.03f) );
-			node = new LightNode(lb1.getLight());
-			list.add(node);
-			node = new ShapeNode(lb1.getShape());
-			list.add(node);
-			manip = new Matrix4f();
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, 0.5f, 0));
-			node = new TransformGroup(manip).setChildren(list);
-			rootlist.add(node);
+			TransformGroup platform = new TransformGroup();
+			platform.add(new TransformGroup().rotate(new Vector3f(1,0,0), (float) (-Math.PI/2))
+											 .scale(10)
+											 .add(new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance())));
 			
-			node = new TransformGroup();
-			((TransformGroup)node).scale(100);
-			((TransformGroup)node).add(new ShapeMaterialNode(SkyBoxRS.getInstance(), SkyMat.getInstance()));
-			rootlist.add(node);
 			
-			node = new TransformGroup().setChildren(rootlist);
 			
-			sceneManager.setGraph(node);
+			root.add(platform);
+			
+			sceneManager.setGraph(root);
 			
 			// create camera
 			flyCam = new FlyingCam(new Vector3f(0,1.7f,3), 0, 0);

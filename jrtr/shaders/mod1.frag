@@ -40,7 +40,7 @@ void main()
 		{
 			L = lightPosition[i] - frag_viewPosition;
 			float dist = length(L);
-			rad = 100*rad/(dist*dist);
+			rad = 10*rad/(dist*dist);
 		}
 		
 		L = normalize(L);

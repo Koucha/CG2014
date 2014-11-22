@@ -26,7 +26,7 @@ public class LightBulb
 		light.ambient = ambientColor;
 
 		// The vertex positions of the cube
-		float v[] = {0+pos.x,1+pos.y,0+pos.z, 0+pos.x,0+pos.y,1+pos.z, 1+pos.x,0+pos.y,0+pos.z, 0+pos.x,0+pos.y,-1+pos.z, -1+pos.x,0+pos.y,0+pos.z, 0+pos.x,-1+pos.y,0+pos.z};
+		float v[] = {0+pos.x,0.1f+pos.y,0+pos.z, 0+pos.x,0+pos.y,0.1f+pos.z, 0.1f+pos.x,0+pos.y,0+pos.z, 0+pos.x,0+pos.y,-0.1f+pos.z, -0.1f+pos.x,0+pos.y,0+pos.z, 0+pos.x,-0.1f+pos.y,0+pos.z};
 		
 		// The vertex normals
 		float n[] = {0,1,0, 0,0,1, 1,0,0, 0,0,-1, -1,0,0, 0,-1,0};
@@ -45,7 +45,8 @@ public class LightBulb
 		shape = new Shape(vertexData);
 		
 		mat = new Material();
-		mat.diffuse = diffuseColor;
+		mat.diffuse = new Vector3f(diffuseColor);
+		mat.diffuse.normalize();
 		Shader shader = Main.renderContext.makeShader();
 	    try {
 	    	shader.load("../jrtr/shaders/light.vert", "../jrtr/shaders/light.frag");

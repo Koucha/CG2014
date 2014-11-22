@@ -2,7 +2,7 @@ package fun;
 
 import jrtr.*;
 
-public final class CubeRS
+public final class SkyBoxRS
 {
 	private static Shape instance = null;
 	
@@ -49,12 +49,12 @@ public final class CubeRS
 		vertexData.addElement(n, VertexData.Semantic.NORMAL, 3);
 		vertexData.addElement(c, VertexData.Semantic.COLOR, 3);
 		vertexData.addElement(t, VertexData.Semantic.TEXCOORD, 2);
-		int indices[] = { 0, 2, 3,  0, 1, 2,
-						  4, 7, 6,  4, 6, 5,
-						  8,10,11,  8, 9,10,
-						 12,15,14, 12,14,13,
-						 16,18,19, 16,17,18,
-						 20,23,22, 20,22,21 };
+		int indices[] = { 0, 3, 2,  0, 2, 1,
+						  4, 6, 7,  4, 5, 6,
+						  8,11,10,  8,10, 9,
+						 12,14,15, 12,13,14,
+						 16,19,18, 16,18,17,
+						 20,22,23, 20,21,22 };
 		vertexData.addIndices(indices);
 		
 		shape = new Shape(vertexData);

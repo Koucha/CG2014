@@ -79,7 +79,7 @@ public class Main
 			list.add(node);
 			Matrix4f manip = new Matrix4f();
 			manip.setIdentity();
-			manip.setTranslation(new Vector3f(10, 6, 0));
+			manip.setTranslation(new Vector3f(2, 1, 0));
 			node = new TransformGroup(manip).setChildren(list);
 			rootlist.add(node);
 			
@@ -88,22 +88,27 @@ public class Main
 			list.add(node);
 			manip = new Matrix4f();
 			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, 20, 0));
+			manip.setTranslation(new Vector3f(0, 2, 0));
 			node = new TransformGroup(manip).setChildren(list);
 			rootlist.add(node);
 			
 			node = new ShapeMaterialNode(ObjRS.getInstanceTeaPot(), WoodMat.getInstance());
 			list = new ArrayList<Node>(3);
 			list.add(node);
-			lb1 = new LightBulb( new Vector3f(0, 0, 12), new Vector3f(0.8f,0.8f,0.8f), new Vector3f(0.05f,0.045f,0.03f) );
+			lb1 = new LightBulb( new Vector3f(-2, 1, 2), new Vector3f(0.2f,0.2f,0.2f), new Vector3f(0.05f,0.045f,0.03f) );
 			node = new LightNode(lb1.getLight());
 			list.add(node);
 			node = new ShapeNode(lb1.getShape());
 			list.add(node);
 			manip = new Matrix4f();
 			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, -10, 0));
+			manip.setTranslation(new Vector3f(0, 0.5f, 0));
 			node = new TransformGroup(manip).setChildren(list);
+			rootlist.add(node);
+			
+			node = new TransformGroup();
+			((TransformGroup)node).scale(100);
+			((TransformGroup)node).add(new ShapeMaterialNode(SkyBoxRS.getInstance(), SkyMat.getInstance()));
 			rootlist.add(node);
 			
 			node = new TransformGroup().setChildren(rootlist);
@@ -111,12 +116,12 @@ public class Main
 			sceneManager.setGraph(node);
 			
 			// create camera
-			flyCam = new FlyingCam(new Vector3f(0,30,30), -0.6f, 0);
+			flyCam = new FlyingCam(new Vector3f(0,1.7f,3), 0, 0);
 
 			// Add the scene to the renderer
 			renderContext.setSceneManager(sceneManager);
 			sceneManager.setCamera(flyCam);
-			sceneManager.setFrustum(new Frustum(0.01f, 100, 1, 60));
+			sceneManager.setFrustum(new Frustum(0.01f, 200, 1, 60));
 
 			// Register a timer task
 		    Timer timer = new Timer();

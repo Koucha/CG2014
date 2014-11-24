@@ -37,12 +37,71 @@ public class TransformGroup extends Group
 		return this;
 	}
 	
+	/**
+	 * Scale uniform by factor s
+	 * @param s scaling factor
+	 * @return the TransformGroup. For chaining methods.
+	 */
 	public TransformGroup scale(float s)
 	{
 		Matrix4f mat = new Matrix4f();
 		mat.setIdentity();
 		
 		mat.setScale(s);
+		
+		tfMat.mul(mat, tfMat);
+		
+		return this;
+	}
+	
+	/**
+	 * Scale in X direction by factor s
+	 * @param s scaling factor along X axis
+	 * @return the TransformGroup. For chaining methods.
+	 */
+	public TransformGroup scaleX(float s)
+	{
+		scale(s,1,1);
+		return this;
+	}
+
+	/**
+	 * Scale in Y direction by factor s
+	 * @param s scaling factor along Y axis
+	 * @return the TransformGroup. For chaining methods.
+	 */
+	public TransformGroup scaleY(float s)
+	{
+		scale(1,s,1);
+		return this;
+	}
+
+	/**
+	 * Scale in Z direction by factor s
+	 * @param s scaling factor along Z axis
+	 * @return the TransformGroup. For chaining methods.
+	 */
+	public TransformGroup scaleZ(float s)
+	{
+		scale(1,1,s);
+		return this;
+	}
+	
+	/**
+	 * Scale differently along each axis
+	 * @param x factor along X axis
+	 * @param y factor along Y axis
+	 * @param z factor along Z axis
+	 * @return the TransformGroup. For chaining methods.
+	 */
+	public TransformGroup scale(float x, float y, float z)
+	{
+		Matrix4f mat = new Matrix4f();
+		mat.setIdentity();
+
+		mat.m00 = x;
+		mat.m11 = y;
+		mat.m22 = z;
 		
 		tfMat.mul(mat, tfMat);
 		

@@ -41,14 +41,16 @@ public class LightNode extends Leaf
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected <T> T get(Class<T> classreference, Matrix4f tfMatOnStack)
 	{
 		if(classreference.isAssignableFrom(Light.class))
 		{
 			light.transform = tfMatOnStack;
-			return (T) light;
+			
+			@SuppressWarnings("unchecked")
+			T temp = (T) light;
+			return temp;
 		}else
 		{
 			return null;

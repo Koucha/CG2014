@@ -19,6 +19,11 @@ public class GraphSceneManager implements SceneManagerInterface
 	{
 		return new GsmLightIterator(root);
 	}
+	
+	public GsmAnimationIterator animationIterator()
+	{
+		return new GsmAnimationIterator(root);
+	}
 
 	public Camera getCamera()
 	{

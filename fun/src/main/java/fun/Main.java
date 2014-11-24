@@ -3,9 +3,7 @@ package fun;
 import jrtr.*;
 import jrtr.gsm.GraphSceneManager;
 import jrtr.gsm.LightNode;
-import jrtr.gsm.Node;
 import jrtr.gsm.ShapeMaterialNode;
-import jrtr.gsm.ShapeNode;
 import jrtr.gsm.TransformGroup;
 
 import javax.swing.*;
@@ -14,8 +12,6 @@ import java.awt.event.*;
 
 import javax.vecmath.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,7 +87,7 @@ public class Main
 											 .scale(10)
 											 .add(new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance())));
 			
-			
+				
 			
 			root.add(platform);
 			

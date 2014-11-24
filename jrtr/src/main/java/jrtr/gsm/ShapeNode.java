@@ -42,13 +42,14 @@ public class ShapeNode extends Leaf
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected <T> T get(Class<T> classreference, Matrix4f tfMatOnStack)
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-			return (T) makeRenderItem(tfMatOnStack);
+			@SuppressWarnings("unchecked")
+			T temp = (T) makeRenderItem(tfMatOnStack);
+			return temp;
 		}else
 		{
 			return null;

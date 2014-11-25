@@ -2,13 +2,13 @@ package jrtr.gsm;
 
 /**
  * Class that handles the animation
- * Has to be implemented (anonymously)
+ * Has to be implemented (anonymously for example)
  * 
  * @author Florian
  */
-public class Animator
+public abstract class Animator
 {
-	AnimationGroup group;
+	protected AnimationGroup group;
 	
 	/**
 	 * Links the Animator to a AnimationGroup
@@ -27,8 +27,5 @@ public class Animator
 	 * 
 	 * @param aniInf Information needed to do the animation
 	 */
-	public void doAnimation(AnimationInfo aniInf)
-	{
-		// to be implemented / overridden
-	}
+	public abstract void doAnimation(AnimationInfo aniInf);
 }

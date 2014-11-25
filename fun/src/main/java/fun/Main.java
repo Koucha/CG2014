@@ -1,6 +1,9 @@
 package fun;
 
 import jrtr.*;
+import jrtr.gsm.AnimationGroup;
+import jrtr.gsm.AnimationInfo;
+import jrtr.gsm.Animator;
 import jrtr.gsm.GraphSceneManager;
 import jrtr.gsm.LightNode;
 import jrtr.gsm.ShapeMaterialNode;
@@ -12,6 +15,7 @@ import java.awt.event.*;
 
 import javax.vecmath.*;
 
+import java.security.acl.Group;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -87,7 +91,25 @@ public class Main
 											 .scale(10)
 											 .add(new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance())));
 			
+				AnimationGroup robota = new AnimationGroup(new Animator(){
+					public void doAnimation(AnimationInfo aniInf)
+					{
+						Matrix4f trafo = new Matrix4f();
+						trafo.setIdentity();
+						trafo.setTranslation(new Vector3f(3,0,0));
+						
+						Matrix4f temp = new Matrix4f();
+						temp.rotY(aniInf.getTime());
+						
+						trafo.mul(temp,trafo);
+						
+						group.setTFMat(trafo);
+					}
+				});
 				
+				//TODO
+				
+				platform.add(robota);
 			
 			root.add(platform);
 			

@@ -44,7 +44,7 @@ void main()
 		}
 		
 		L = normalize(L);
-		vec4 e = -normalize(frag_viewPosition);
+		vec4 e = normalize(frag_viewPosition);
 		vec4 R = normalize(reflect(L, vec4(normal, 0)));
 		
 		float ndotl = max(dot(vec4(normal, 0), L), 0);

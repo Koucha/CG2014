@@ -98,7 +98,7 @@ public class Main
 					trafo.setTranslation(new Vector3f(3,0,0));
 					
 					Matrix4f temp = new Matrix4f();
-					temp.rotY(aniInf.getTime());
+					temp.rotY(-aniInf.getTime());
 					
 					trafo.mul(temp,trafo);
 					

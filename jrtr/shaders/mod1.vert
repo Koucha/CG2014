@@ -23,7 +23,7 @@ out vec4 frag_viewPosition;
 
 void main()
 {
-	frag_normal = (transpose(inverse(modelview)) * vec4(normal,0)).xyz;
+	frag_normal = normalize((transpose(inverse(modelview)) * vec4(normal,0)).xyz);
 	
 	frag_texcoord = texcoord;
 	

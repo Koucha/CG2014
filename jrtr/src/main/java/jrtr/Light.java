@@ -15,7 +15,7 @@ public class Light {
 	{
 		// Default light parameters
 		direction = new Vector3f(0.f,0.f,1.f);
-		position = new Vector3f(0.f,0.f,1.f);
+		position = new Vector3f(0.f,0.f,0.f);
 		type = Type.DIRECTIONAL;
 		diffuse = new Vector3f(1.f,1.f,1.f);
 		ambient = new Vector3f(0.f,0.f,0.f);

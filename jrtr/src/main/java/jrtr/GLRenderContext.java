@@ -346,11 +346,21 @@ public class GLRenderContext implements RenderContext {
 				{
 					l = iter.next(); 
 					
+					Vector4f dir = new Vector4f(l.direction.x, l.direction.y, l.direction.z, 0);
+					Matrix4f mat = new Matrix4f(sceneManager.getCamera().getCameraMatrix());
+					mat.mul(l.transform);
+					mat.invert();
+					mat.transpose();
+					mat.transform(dir);
+					dir.w = 0;
+					dir.normalize();
+					//System.out.println("lightdir " + nLights + " is " + dir.toString());
+					
 					// Pass light direction to shader, we assume the shader stores it in an array "lightDirection[]"
 					lightString = "lightDirection[" + nLights + "]";			
 					id = gl.glGetUniformLocation(activeShaderID, lightString);
 					if(id!=-1)
-						gl.glUniform4f(id, l.direction.x, l.direction.y, l.direction.z, 0);		// Set light direction
+						gl.glUniform4f(id, dir.x, dir.y, dir.z, dir.w);		// Set light direction
 // Only for debugging
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");
@@ -358,13 +368,13 @@ public class GLRenderContext implements RenderContext {
 					Vector4f pos = new Vector4f(l.position.x, l.position.y, l.position.z, 1);
 					l.transform.transform(pos);
 					sceneManager.getCamera().getCameraMatrix().transform(pos);
-					//System.out.println("light " + nLights + " is " + pos.toString());
+					//System.out.println("lightpos " + nLights + " is " + pos.toString());
 					
 					// Pass light position to shader, we assume the shader stores it in an array "lightPosition[]"
 					lightString = "lightPosition[" + nLights + "]";			
 					id = gl.glGetUniformLocation(activeShaderID, lightString);
 					if(id!=-1)
-						gl.glUniform4f(id, pos.x, pos.y, pos.z, 1);		// Set light position
+						gl.glUniform4f(id, pos.x, pos.y, pos.z, pos.w);		// Set light position
 // Only for debugging
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");

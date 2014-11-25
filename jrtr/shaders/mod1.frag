@@ -45,12 +45,12 @@ void main()
 		
 		L = normalize(L);
 		vec4 e = -normalize(frag_viewPosition);
-		vec4 R = -reflect(L, vec4(normal, 0));
+		vec4 R = normalize(reflect(L, vec4(normal, 0)));
 		
-		float ndot = max(dot(vec4(normal, 0), L), 0);
-		float rdote = max(0, dot(normalize(R), e));
+		float ndotl = max(dot(vec4(normal, 0), L), 0);
+		float rdote = max(0, dot(R, e));
 		
-		suma = suma + rad * ndot + lightAmbient[i];
+		suma = suma + rad * ndotl + lightAmbient[i];
 		sumb = sumb + rad * pow(rdote, shininess);
 		
 	}

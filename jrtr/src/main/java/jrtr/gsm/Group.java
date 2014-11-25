@@ -11,7 +11,7 @@ import javax.vecmath.Matrix4f;
  * 
  * @author Florian
  */
-public abstract class Group implements Node
+public class Group implements Node
 {
 	List<Node> children;
 	

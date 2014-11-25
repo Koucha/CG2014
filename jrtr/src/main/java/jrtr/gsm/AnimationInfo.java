@@ -19,10 +19,12 @@ public class AnimationInfo
 
 	/**
 	 * @param time the time to set
+	 * @return the AnimationInfo itself
 	 */
-	public void setTime(float time)
+	public AnimationInfo setTime(float time)
 	{
 		this.time = time;
+		return this;
 	}
 	
 	

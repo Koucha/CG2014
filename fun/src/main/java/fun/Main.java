@@ -15,7 +15,6 @@ import java.awt.event.*;
 
 import javax.vecmath.*;
 
-import java.security.acl.Group;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,25 +90,25 @@ public class Main
 											 .scale(10)
 											 .add(new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance())));
 			
-				AnimationGroup robota = new AnimationGroup(new Animator(){
-					public void doAnimation(AnimationInfo aniInf)
-					{
-						Matrix4f trafo = new Matrix4f();
-						trafo.setIdentity();
-						trafo.setTranslation(new Vector3f(3,0,0));
-						
-						Matrix4f temp = new Matrix4f();
-						temp.rotY(aniInf.getTime());
-						
-						trafo.mul(temp,trafo);
-						
-						group.setTFMat(trafo);
-					}
-				});
+			AnimationGroup robota = new AnimationGroup(new Animator(){
+				public void doAnimation(AnimationInfo aniInf)
+				{
+					Matrix4f trafo = new Matrix4f();
+					trafo.setIdentity();
+					trafo.setTranslation(new Vector3f(3,0,0));
+					
+					Matrix4f temp = new Matrix4f();
+					temp.rotY(aniInf.getTime());
+					
+					trafo.mul(temp,trafo);
+					
+					group.setTFMat(trafo);
+				}
+			});
+			
+			robota.add(RobotBuilder.makeRobot());
 				
-				//TODO
-				
-				platform.add(robota);
+			platform.add(robota);
 			
 			root.add(platform);
 			
@@ -137,16 +136,20 @@ public class Main
 	public static class AnimationTask extends TimerTask
 	{
 		private boolean notYetWorking;
+		private float time;
 		
 		public AnimationTask()
 		{
 			super();
 			
+			time = 0;
 			notYetWorking = true;
 		}
 
 		public void run()
 		{
+			time = time + stepsize/30.0f;
+			
 			if(notYetWorking)
 			{
 				notYetWorking = false;	// repaint blockieren für den fall, dass es länger dauert als die refreshrate
@@ -175,6 +178,9 @@ public class Main
 					flyCam.moveSdw(stepsize);
 				}
 	    		
+				// Animate Scene
+				sceneManager.animationIterator().feedAnimationWith(new AnimationInfo().setTime(time));
+				
 	    		// Trigger redrawing of the render window
 	    		renderPanel.getCanvas().repaint();
 	    		

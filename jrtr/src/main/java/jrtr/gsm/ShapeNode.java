@@ -37,13 +37,14 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
+			/*
 			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
 			{
 				if(isBoundingSphereIntersecting(nodeRequestData.getTF(), ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
 				{
 					return false;
 				}
-			}
+			}*/
 			
 			return true;
 		}else
@@ -57,13 +58,14 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
+			/*
 			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
 			{
 				if(isBoundingSphereIntersecting(nodeRequestData.getTF(), ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
 				{
 					return null;
 				}
-			}
+			}*/
 			
 			@SuppressWarnings("unchecked")
 			T temp = (T) makeRenderItem(tfMatOnStack);
@@ -84,17 +86,18 @@ public class ShapeNode extends Leaf
 	{
 		Matrix4f canonToObjVert = new Matrix4f();
 		canonToObjVert.setIdentity();
-		canonToObjVert.mul(transformationToWorld);	//obj->world
-		canonToObjVert.mul(gsm.getCamera().getCameraMatrix());	//obj->cam
-		canonToObjVert.mul(gsm.getFrustum().getProjectionMatrix());	//obj->canonic
+		canonToObjVert.mul(transformationToWorld, canonToObjVert);	//obj->world
+		canonToObjVert.mul(gsm.getCamera().getCameraMatrix(), canonToObjVert);	//obj->cam
+		canonToObjVert.mul(gsm.getFrustum().getProjectionMatrix(), canonToObjVert);	//obj->canonic
 		
 		Matrix4f canonToObjNormal = new Matrix4f(canonToObjVert);
 		canonToObjNormal.transpose();	//transpose(invert(canon->obj))
 		
-		try {
+		try
+		{
 			canonToObjVert.invert();	//canon->obj
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 			return true;
 		}
@@ -133,7 +136,7 @@ public class ShapeNode extends Leaf
 		
 		if(signedDistanceSphereCenterOrigin - signedDistancePlaneOrigin > shape.getBoundingSphereRadius())
 		{
-			return false;	//lies above plane
+			return true;	//lies above plane
 		}else
 		{
 			return false;	//lies beyond plane

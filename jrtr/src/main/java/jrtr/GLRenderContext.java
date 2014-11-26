@@ -349,7 +349,13 @@ public class GLRenderContext implements RenderContext {
 					Vector4f dir = new Vector4f(l.direction.x, l.direction.y, l.direction.z, 0);
 					Matrix4f mat = new Matrix4f(sceneManager.getCamera().getCameraMatrix());
 					mat.mul(l.transform);
-					mat.invert();
+					try
+					{
+						mat.invert();
+					} catch (Exception e)
+					{
+						continue;
+					}
 					mat.transpose();
 					mat.transform(dir);
 					dir.w = 0;

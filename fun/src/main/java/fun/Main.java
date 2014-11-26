@@ -68,10 +68,11 @@ public class Main
 			
 			TransformGroup root = new TransformGroup();
 			
+			/*
 			TransformGroup skybox = new TransformGroup();
 			skybox.scale(100);
 			skybox.add(new ShapeMaterialNode(SkyBoxRS.getInstance(), SkyMat.getInstance()));
-			root.add(skybox);
+			root.add(skybox);*/
 			
 			Light light = new Light();
 			light.diffuse = new Vector3f(0.2f, 0.2f, 0.2f);

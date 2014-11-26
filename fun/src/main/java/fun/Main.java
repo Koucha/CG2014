@@ -1,9 +1,7 @@
 package fun;
 
 import jrtr.*;
-import jrtr.gsm.AnimationGroup;
 import jrtr.gsm.AnimationInfo;
-import jrtr.gsm.Animator;
 import jrtr.gsm.GraphSceneManager;
 import jrtr.gsm.LightNode;
 import jrtr.gsm.ShapeMaterialNode;
@@ -82,32 +80,14 @@ public class Main
 			light.type = Light.Type.DIRECTIONAL;
 			root.add(new LightNode(light));
 			
-			TransformGroup platform = new TransformGroup();
-			platform.add(new TransformGroup().rotate(new Vector3f(1,0,0), (float) (-Math.PI/2))
-											 .scale(10)
-											 .add(new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance())));
-			
-			AnimationGroup robota = new AnimationGroup(new Animator(){
-				public void doAnimation(AnimationInfo aniInf)
+			for(int i = 0; i < 30; i++)
+			{
+				for(int j = 0; j < 30; j++)
 				{
-					Matrix4f trafo = new Matrix4f();
-					trafo.setIdentity();
-					trafo.setTranslation(new Vector3f(3,0,0));
-					
-					Matrix4f temp = new Matrix4f();
-					temp.rotY(-aniInf.getTime()*2);
-					
-					trafo.mul(temp,trafo);
-					
-					group.setTFMat(trafo);
+					root.add(new TransformGroup().translate(new Vector3f(2*i - 30, 0, 2*j - 30))
+												 .add(new ShapeMaterialNode(ObjRS.getInstanceTeaPot(), WoodMat.getInstance())));		
 				}
-			});
-			
-			robota.add(RobotBuilder.makeRobot());
-				
-			platform.add(robota);
-			
-			root.add(platform);
+			}
 			
 			sceneManager.setGraph(root);
 			

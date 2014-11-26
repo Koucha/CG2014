@@ -59,6 +59,7 @@ public final class CubeRS
 		
 		shape = new Shape(vertexData);
 		
+		shape.calculateBoundingSphere();
 		return shape;
 	}
 	

@@ -24,6 +24,7 @@ public final class PlaneRS
 		
 		shape = new Shape(vertexData);
 		
+		shape.calculateBoundingSphere();
 		return shape;
 	}
 	

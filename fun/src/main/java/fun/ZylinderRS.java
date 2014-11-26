@@ -97,7 +97,9 @@ public final class ZylinderRS
 		
 		vertexData.addIndices(indices);
 		
-		return new Shape(vertexData);
+		Shape shape = new Shape(vertexData);
+		shape.calculateBoundingSphere();
+		return shape;
 	}
 	
 	public static Shape getInstance()

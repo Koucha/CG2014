@@ -21,6 +21,7 @@ public final class ObjRS
 			System.out.println(e1.getLocalizedMessage());
 		}
 		
+		shape.calculateBoundingSphere();
 		return shape;
 	}
 

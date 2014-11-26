@@ -30,13 +30,9 @@ public class Main
 	static GraphSceneManager sceneManager;
 	static FlyingCam flyCam;
 	
-	static LightBulb lb1;
-	static LightBulb lb2;
-	static LightBulb lb3;
-	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
-	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;
+	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF, runAnimation;
 	static boolean mouseValid;
 	static int mousex, mousey;
 	static boolean isobaren;
@@ -63,6 +59,7 @@ public class Main
 			stepsize = BASESTEP;
 			keyDownW = keyDownA = keyDownS = keyDownD = keyDownSpace = false;
 			fixedF = true;
+			runAnimation = true;
 			mouseValid = false;
 			mousex = 0;
 			mousey = 0;
@@ -79,7 +76,7 @@ public class Main
 			root.add(skybox);
 			
 			Light light = new Light();
-			light.diffuse = new Vector3f(0.1f, 0.1f, 0.1f);
+			light.diffuse = new Vector3f(0.2f, 0.2f, 0.2f);
 			light.ambient = new Vector3f(0.01f, 0.01f, 0.01f);
 			light.direction = new Vector3f(0.1f, -0.9899f, -0.1f);
 			light.type = Light.Type.DIRECTIONAL;
@@ -98,7 +95,7 @@ public class Main
 					trafo.setTranslation(new Vector3f(3,0,0));
 					
 					Matrix4f temp = new Matrix4f();
-					temp.rotY(-aniInf.getTime());
+					temp.rotY(-aniInf.getTime()*2);
 					
 					trafo.mul(temp,trafo);
 					
@@ -115,7 +112,7 @@ public class Main
 			sceneManager.setGraph(root);
 			
 			// create camera
-			flyCam = new FlyingCam(new Vector3f(0,1.7f,3), 0, 0);
+			flyCam = new FlyingCam(new Vector3f(0,3,5), 0, 0);
 
 			// Add the scene to the renderer
 			renderContext.setSceneManager(sceneManager);
@@ -148,7 +145,10 @@ public class Main
 
 		public void run()
 		{
-			time = time + stepsize/30.0f;
+			if(runAnimation)
+			{
+				time = time + stepsize/30.0f;
+			}
 			
 			if(notYetWorking)
 			{
@@ -259,6 +259,7 @@ public class Main
 			}
 		}
 	}
+
 	
 	/**
 	 * A key listener for the main window. Use this to process key events.
@@ -323,7 +324,8 @@ public class Main
         {
 			switch(e.getKeyChar())
 			{
-				case 'R': {
+				case 'r': {
+					runAnimation = !runAnimation;
 					break;
 				}
 				case 'f': {
@@ -332,15 +334,15 @@ public class Main
 					break;
 				}
 				case '1': {
-					lb1.switchOnOff();
+					stepsize /= 2f;
 					break;
 				}
 				case '2': {
-					lb2.switchOnOff();
+					stepsize *= 2f;
 					break;
 				}
 				case '3': {
-					lb3.switchOnOff();
+					stepsize = BASESTEP;
 					break;
 				}
 				case 'i': {

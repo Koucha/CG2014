@@ -108,7 +108,7 @@ public class SWRenderContext implements RenderContext {
 		
 		int[] indices = vd.getIndices();
 		Vector4f vertex1 = null, vertex2 = null, vertex3 = null;
-		Vector4f normal1 = null, normal2 = null, normal3 = null;
+//		Vector4f normal1 = null, normal2 = null, normal3 = null;
 		Vector2f teco1 = null, teco2 = null, teco3 = null;
 		Vector3f col1 = null, col2 = null, col3 = null;
 		
@@ -133,12 +133,12 @@ public class SWRenderContext implements RenderContext {
 					
 					skip = !triRenderer.setVertices(vertex1, vertex2, vertex3);
 					break;
-				case NORMAL:
-					normal1 = new Vector4f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2], 0);
-					normal2 = new Vector4f(data[3*indices[i + 1]], data[3*indices[i + 1] + 1], data[3*indices[i + 1] + 2], 0);
-					normal3 = new Vector4f(data[3*indices[i + 2]], data[3*indices[i + 2] + 1], data[3*indices[i + 2] + 2], 0);
-					//TODO
-					break;
+//				case NORMAL:
+//					normal1 = new Vector4f(data[3*indices[i]], data[3*indices[i] + 1], data[3*indices[i] + 2], 0);
+//					normal2 = new Vector4f(data[3*indices[i + 1]], data[3*indices[i + 1] + 1], data[3*indices[i + 1] + 2], 0);
+//					normal3 = new Vector4f(data[3*indices[i + 2]], data[3*indices[i + 2] + 1], data[3*indices[i + 2] + 2], 0);
+//
+//					break;
 				case TEXCOORD:
 					teco1 = new Vector2f(data[2*indices[i]], data[2*indices[i] + 1]);
 					teco2 = new Vector2f(data[2*indices[i + 1]], data[2*indices[i + 1] + 1]);
@@ -152,6 +152,8 @@ public class SWRenderContext implements RenderContext {
 					col3 = new Vector3f(data[3*indices[i + 2]], data[3*indices[i + 2] + 1], data[3*indices[i + 2] + 2]);
 					
 					triRenderer.setColor(col1, col2, col3);
+					break;
+				default:
 					break;
 				}
 			}

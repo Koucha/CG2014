@@ -56,10 +56,10 @@ public abstract class GLRenderPanel implements RenderPanel {
 		{
 		}
 		
-		public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
-		    boolean deviceChanged)
-		{
-		}
+//		public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
+//		    boolean deviceChanged)
+//		{
+//		}
 		
 		public void dispose(GLAutoDrawable g)
 		{

@@ -1,6 +1,13 @@
 package fun;
 
 import jrtr.*;
+import jrtr.gsm.AnimationGroup;
+import jrtr.gsm.AnimationInfo;
+import jrtr.gsm.Animator;
+import jrtr.gsm.GraphSceneManager;
+import jrtr.gsm.LightNode;
+import jrtr.gsm.ShapeMaterialNode;
+import jrtr.gsm.TransformGroup;
 
 import javax.swing.*;
 
@@ -20,14 +27,12 @@ public class Main
 	static RenderPanel renderPanel;
 	static RenderContext renderContext;
 	static Shader normalColShader;
-	static SimpleSceneManager sceneManager;
-	static Camera flyCam;
-	
-	static Material mat;
+	static GraphSceneManager sceneManager;
+	static FlyingCam flyCam;
 	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
-	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF;
+	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF, runAnimation;
 	static boolean mouseValid;
 	static int mousex, mousey;
 	static boolean isobaren;
@@ -54,30 +59,65 @@ public class Main
 			stepsize = BASESTEP;
 			keyDownW = keyDownA = keyDownS = keyDownD = keyDownSpace = false;
 			fixedF = true;
+			runAnimation = true;
 			mouseValid = false;
 			mousex = 0;
 			mousey = 0;
 			isobaren = false;
 								
 			// Make a scene manager and add the object
-			sceneManager = new SimpleSceneManager();
+			sceneManager = new GraphSceneManager();
 			
-			mat = new Material();
-			Matrix4f manip = new Matrix4f();
-			TestRS theThing = new TestRS(null, mat);
-			manip.setIdentity();
-			manip.setTranslation(new Vector3f(0, 0, -40));
-			theThing.setTransMat(manip);
-			theThing.updateMat();
-			theThing.attachTo(sceneManager);
+			TransformGroup root = new TransformGroup();
+			
+			TransformGroup skybox = new TransformGroup();
+			skybox.scale(100);
+			skybox.add(new ShapeMaterialNode(SkyBoxRS.getInstance(), SkyMat.getInstance()));
+			root.add(skybox);
+			
+			Light light = new Light();
+			light.diffuse = new Vector3f(0.2f, 0.2f, 0.2f);
+			light.ambient = new Vector3f(0.01f, 0.01f, 0.01f);
+			light.direction = new Vector3f(0.1f, -0.9899f, -0.1f);
+			light.type = Light.Type.DIRECTIONAL;
+			root.add(new LightNode(light));
+			
+			TransformGroup platform = new TransformGroup();
+			platform.add(new TransformGroup().rotate(new Vector3f(1,0,0), (float) (-Math.PI/2))
+											 .scale(10)
+											 .add(new ShapeMaterialNode(PlaneRS.getInstance(), WoodMat.getInstance())));
+			
+			AnimationGroup robota = new AnimationGroup(new Animator(){
+				public void doAnimation(AnimationInfo aniInf)
+				{
+					Matrix4f trafo = new Matrix4f();
+					trafo.setIdentity();
+					trafo.setTranslation(new Vector3f(3,0,0));
+					
+					Matrix4f temp = new Matrix4f();
+					temp.rotY(-aniInf.getTime()*2);
+					
+					trafo.mul(temp,trafo);
+					
+					group.setTFMat(trafo);
+				}
+			});
+			
+			robota.add(RobotBuilder.makeRobot());
+				
+			platform.add(robota);
+			
+			root.add(platform);
+			
+			sceneManager.setGraph(root);
 			
 			// create camera
-			flyCam = new Camera(new Vector3f(0,0,20), new Vector3f(0,0,0), new Vector3f(0,1,0));
+			flyCam = new FlyingCam(new Vector3f(0,3,5), 0, 0);
 
 			// Add the scene to the renderer
 			renderContext.setSceneManager(sceneManager);
 			sceneManager.setCamera(flyCam);
-			sceneManager.setFrustum(new Frustum(0.01f, 100, 1, 60));
+			sceneManager.setFrustum(new Frustum(0.01f, 200, 1, 60));
 
 			// Register a timer task
 		    Timer timer = new Timer();
@@ -93,38 +133,54 @@ public class Main
 	public static class AnimationTask extends TimerTask
 	{
 		private boolean notYetWorking;
+		private float time;
 		
 		public AnimationTask()
 		{
 			super();
 			
+			time = 0;
 			notYetWorking = true;
 		}
 
 		public void run()
 		{
+			if(runAnimation)
+			{
+				time = time + stepsize/30.0f;
+			}
+			
 			if(notYetWorking)
 			{
 				notYetWorking = false;	// repaint blockieren für den fall, dass es länger dauert als die refreshrate
 				
-				//flyCam.setDirection(xAngle, yAngle);
+				flyCam.setDirection(xAngle, yAngle);
 				
-				if(keyDownW)
+				if(keyDownW && !keyDownSpace)
 				{
-					mat.ix = mat.ix - 0.001f;
+					flyCam.moveFwd(stepsize);
+				}else if(keyDownS && !keyDownSpace)
+				{
+					flyCam.moveFwd(-stepsize);
+				}else if(keyDownW)
+				{
+					flyCam.moveUp(stepsize);
 				}else if(keyDownS)
 				{
-					mat.ix = mat.ix + 0.001f;
+					flyCam.moveUp(-stepsize);
 				}
 				
 				if(keyDownD)
 				{
-					mat.iy = mat.iy - 0.01f;
+					flyCam.moveSdw(-stepsize);
 				}else if(keyDownA)
 				{
-					mat.iy = mat.iy + 0.01f;
+					flyCam.moveSdw(stepsize);
 				}
 	    		
+				// Animate Scene
+				sceneManager.animationIterator().feedAnimationWith(new AnimationInfo().setTime(time));
+				
 	    		// Trigger redrawing of the render window
 	    		renderPanel.getCanvas().repaint();
 	    		
@@ -203,6 +259,7 @@ public class Main
 			}
 		}
 	}
+
 	
 	/**
 	 * A key listener for the main window. Use this to process key events.
@@ -267,12 +324,25 @@ public class Main
         {
 			switch(e.getKeyChar())
 			{
-				case 'R': {
+				case 'r': {
+					runAnimation = !runAnimation;
 					break;
 				}
 				case 'f': {
 					fixedF = !fixedF;
 					mouseValid = false;
+					break;
+				}
+				case '1': {
+					stepsize /= 2f;
+					break;
+				}
+				case '2': {
+					stepsize *= 2f;
+					break;
+				}
+				case '3': {
+					stepsize = BASESTEP;
 					break;
 				}
 				case 'i': {
@@ -297,7 +367,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T4 - A4");	//TODO change, always.
+		JFrame jframe = new JFrame("T5 - A1");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window

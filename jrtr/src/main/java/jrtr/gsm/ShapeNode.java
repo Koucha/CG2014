@@ -96,6 +96,7 @@ public class ShapeNode extends Leaf
 			canonToObjVert.invert();	//canon->obj
 		} catch (Exception e)
 		{
+			System.out.println("pipapo");
 			return true;
 		}
 		
@@ -106,9 +107,11 @@ public class ShapeNode extends Leaf
 		   isBoundingSphereOverPlane(new Vector4f(0,-1,0,1), new Vector4f(0,-1,0,0), canonToObjVert, canonToObjNormal) ||
 		   isBoundingSphereOverPlane(new Vector4f(0,0,-1,1), new Vector4f(0,0,-1,0), canonToObjVert, canonToObjNormal) )
 		{
+			System.out.println("pipipipipi");
 			return false;	// Sphere is outside at least one plane
 		}
-		
+
+		System.out.println("po");
 		return true;
 	}
 	

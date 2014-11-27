@@ -9,7 +9,7 @@ public class GsmRenderItemIterator implements SceneManagerIterator
 	
 	public GsmRenderItemIterator(Node root, GraphSceneManager gsm)
 	{
-		intern = new GraphSceneIterator(root, new NodeRequestData());
+		intern = new GraphSceneIterator(root, new ShapeNodeRequestData(gsm));
 	}
 	
 	public boolean hasNext()

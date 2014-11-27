@@ -1,5 +1,7 @@
 package jrtr.gsm;
 
+import javax.vecmath.Matrix4f;
+
 /**
  * Node that contains SceneGraph data (e.g. Shape, Light, Camera).
  * (Does not manipulate the nodeStack)

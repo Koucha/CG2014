@@ -348,7 +348,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T5 - A1");	//TODO change, always.
+		JFrame jframe = new JFrame("T5 - A2");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window

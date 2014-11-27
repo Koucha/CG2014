@@ -1,5 +1,7 @@
 package jrtr.gsm;
 
+import javax.vecmath.Matrix4f;
+
 /**
  * Basic Node containing scene data
  * 

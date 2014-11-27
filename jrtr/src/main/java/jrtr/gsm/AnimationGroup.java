@@ -1,5 +1,7 @@
 package jrtr.gsm;
 
+import javax.vecmath.Matrix4f;
+
 /**
  * Group whose children can be animated via animation task
  * 

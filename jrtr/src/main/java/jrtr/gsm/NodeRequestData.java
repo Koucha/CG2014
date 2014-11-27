@@ -2,8 +2,6 @@ package jrtr.gsm;
 
 import java.util.Stack;
 
-import javax.vecmath.Matrix4f;
-
 /**
  * Additional Data passed when requesting Object from Node.
  * Basic implementation; only carries nodeStack and transformationToWorld. 

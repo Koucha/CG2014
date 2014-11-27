@@ -1,5 +1,7 @@
 package jrtr.gsm;
 
+import javax.vecmath.Matrix4f;
+
 import jrtr.Light;
 
 public class LightNode extends Leaf

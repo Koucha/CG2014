@@ -3,6 +3,8 @@ package jrtr.gsm;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.vecmath.Matrix4f;
+
 /**
  * Node that contains a Group of other Nodes
  * 

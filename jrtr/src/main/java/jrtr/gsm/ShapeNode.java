@@ -37,14 +37,13 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-			/*
 			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
 			{
-				if(isBoundingSphereIntersecting(nodeRequestData.getTF(), ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
+				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
 				{
 					return false;
 				}
-			}*/
+			}
 			
 			return true;
 		}else
@@ -58,14 +57,13 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-			/*
 			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
 			{
-				if(isBoundingSphereIntersecting(nodeRequestData.getTF(), ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
+				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
 				{
 					return null;
 				}
-			}*/
+			}
 			
 			@SuppressWarnings("unchecked")
 			T temp = (T) makeRenderItem(tfMatOnStack);
@@ -98,7 +96,6 @@ public class ShapeNode extends Leaf
 			canonToObjVert.invert();	//canon->obj
 		} catch (Exception e)
 		{
-			e.printStackTrace();
 			return true;
 		}
 		

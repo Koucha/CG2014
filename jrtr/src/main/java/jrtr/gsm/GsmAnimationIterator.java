@@ -6,7 +6,7 @@ public class GsmAnimationIterator
 	
 	public GsmAnimationIterator(Node root)
 	{
-		intern = new GraphSceneIterator(root);
+		intern = new GraphSceneIterator(root, new NodeRequestData());
 	}
 	
 	public boolean hasNext()

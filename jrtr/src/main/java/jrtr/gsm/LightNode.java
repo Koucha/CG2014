@@ -30,7 +30,7 @@ public class LightNode extends Leaf
 	}
 
 	@Override
-	protected <T> boolean is(Class<T> classreference)
+	protected <T> boolean is(Class<T> classreference, INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
 		if(classreference.isAssignableFrom(Light.class))
 		{
@@ -42,7 +42,7 @@ public class LightNode extends Leaf
 	}
 
 	@Override
-	protected <T> T get(Class<T> classreference, Matrix4f tfMatOnStack)
+	protected <T> T get(Class<T> classreference, INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
 		if(classreference.isAssignableFrom(Light.class))
 		{

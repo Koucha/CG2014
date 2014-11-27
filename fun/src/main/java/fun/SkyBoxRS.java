@@ -59,6 +59,7 @@ public final class SkyBoxRS
 		
 		shape = new Shape(vertexData);
 		
+		shape.calculateBoundingSphere();
 		return shape;
 	}
 	

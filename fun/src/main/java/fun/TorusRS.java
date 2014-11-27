@@ -74,6 +74,7 @@ public final class TorusRS
 		
 		shape = new Shape(vertexData);
 		
+		shape.calculateBoundingSphere();
 		return shape;
 	}
 	

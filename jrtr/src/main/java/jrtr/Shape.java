@@ -1,6 +1,8 @@
 package jrtr;
 import javax.vecmath.*;
 
+import jrtr.VertexData.VertexElement;
+
 /**
  * Represents a 3D object. The shape references its geometry, 
  * that is, a triangle mesh stored in a {@link VertexData} 
@@ -11,6 +13,9 @@ public class Shape {
 	private Material material;
 	private VertexData vertexData;
 	private Matrix4f t;
+
+	private Vector3f boundingSphereCenter;
+	private float boundingSphereRadius;
 	
 	/**
 	 * Make a shape from {@link VertexData}. A shape contains the geometry 
@@ -27,6 +32,9 @@ public class Shape {
 		t.setIdentity();
 		
 		material = null;
+		
+		boundingSphereCenter = null;
+		setBoundingSphereRadius(0);
 	}
 	
 	public VertexData getVertexData()
@@ -61,6 +69,64 @@ public class Shape {
 	public Material getMaterial()
 	{
 		return material;
+	}
+
+	public float getBoundingSphereRadius()
+	{
+		if(boundingSphereRadius == 0)
+		{
+			calculateBoundingSphere();
+		}
+		
+		return boundingSphereRadius;
+	}
+
+	public void setBoundingSphereRadius(float boundingSphereRadius)
+	{
+		this.boundingSphereRadius = boundingSphereRadius;
+	}
+
+	public Vector3f getBoundingSphereCenter()
+	{
+		if(boundingSphereCenter == null)
+		{
+			calculateBoundingSphere();
+		}
+		
+		return boundingSphereCenter;
+	}
+
+	public void setBoundingSphereCenter(Vector3f boundingSphereCenter)
+	{
+		this.boundingSphereCenter = boundingSphereCenter;
+	}
+
+	public void calculateBoundingSphere()
+	{
+		boundingSphereCenter = new Vector3f(0,0,0);
+		boundingSphereRadius = 0;
+		
+		for(VertexElement el:vertexData.getElements())
+		{
+			if(el.getSemantic() == VertexData.Semantic.POSITION)
+			{
+				float[] dat = el.getData();
+				
+				for(int i = 0; i < vertexData.getNumberOfVertices(); i++)
+				{
+					boundingSphereCenter.add(new Vector3f(dat[3*i], dat[3*i + 1], dat[3*i + 2]));
+				}
+				boundingSphereCenter.scale(1.0f/vertexData.getNumberOfVertices());
+				
+				for(int i = 0; i < vertexData.getNumberOfVertices(); i++)
+				{
+					Vector3f vec = new Vector3f(dat[3*i], dat[3*i + 1], dat[3*i + 2]);
+					vec.sub(boundingSphereCenter);
+					boundingSphereRadius = Math.max(boundingSphereRadius, vec.length());
+				}
+				break;
+			}
+		}
 	}
 
 }

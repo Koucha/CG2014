@@ -1,7 +1,5 @@
 package jrtr.gsm;
 
-import java.util.Stack;
-
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
@@ -133,12 +131,12 @@ public class TransformGroup extends Group
 	}
 
 	@Override
-	protected void progress(Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	protected void progress(INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
 		Matrix4f mat = new Matrix4f(tfMatOnStack);
 		
 		mat.mul(tfMat);
 		
-		super.progress(nodeStack, mat);
+		super.progress(nodeRequestData, mat);
 	}
 }

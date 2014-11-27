@@ -2,7 +2,6 @@ package jrtr.gsm;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import javax.vecmath.Matrix4f;
 
@@ -54,29 +53,29 @@ public class Group implements Node
 		return this;
 	}
 
-	public <T> boolean isAndProgress(Class<T> classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	public <T> boolean isAndProgress(Class<T> classreference, INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
-		progress(nodeStack, tfMatOnStack);
+		progress(nodeRequestData, tfMatOnStack);
 		return false;
 	}
 
-	public <T> T getAndProgress(Class<T> classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	public <T> T getAndProgress(Class<T> classreference, INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
-		progress(nodeStack, tfMatOnStack);
+		progress(nodeRequestData, tfMatOnStack);
 		return null;
 	}
 
 	/**
 	 * Performs the Node specific actions on the nodeStack
 	 * 
-	 * @param nodeStack stack used for iteration
+	 * @param nodeRequestData additional data used in iteration
 	 * @param tfMatOnStack matrix belonging to this Node
 	 */
-	protected void progress(Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	protected void progress(INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
 		for(Node node:getChildren())
 		{
-			nodeStack.push(new StackElement(node, tfMatOnStack));
+			nodeRequestData.getStack().push(new StackElement(node, tfMatOnStack));
 		}
 	}
 }

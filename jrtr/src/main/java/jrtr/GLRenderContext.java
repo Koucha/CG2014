@@ -296,14 +296,19 @@ public class GLRenderContext implements RenderContext {
 				id = gl.glGetUniformLocation(activeShaderID, "myTexture");
 				gl.glUniform1i(id, 0);	// The variable in the shader needs to be set to the desired texture unit, i.e., 0
 			}
+			// Activate the texture, if the material has one
+			if(m.glossTex != null) {
+				// OpenGL calls to activate the texture 
+				gl.glActiveTexture(GL3.GL_TEXTURE1);	// Work with texture unit 1
+				gl.glEnable(GL3.GL_TEXTURE_2D);
+				gl.glBindTexture(GL3.GL_TEXTURE_2D, ((GLTexture)m.glossTex).getId());
+				gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+				gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+				// We assume the texture in the shader is called "myTexture"
+				id = gl.glGetUniformLocation(activeShaderID, "myGloss");
+				gl.glUniform1i(id, 1);	// The variable in the shader needs to be set to the desired texture unit, i.e., 0
+			}
 			
-			id = gl.glGetUniformLocation(activeShaderID, "ix");
-			if(id!=-1)
-				gl.glUniform1f(id, m.ix);
-			
-			id = gl.glGetUniformLocation(activeShaderID, "iy");
-			if(id!=-1)
-				gl.glUniform1f(id, m.iy);
 			
 			// Pass a default light source to shader
 			String lightString = "lightDirection[" + 0 + "]";			
@@ -341,24 +346,41 @@ public class GLRenderContext implements RenderContext {
 				{
 					l = iter.next(); 
 					
+					Vector4f dir = new Vector4f(l.direction.x, l.direction.y, l.direction.z, 0);
+					Matrix4f mat = new Matrix4f(sceneManager.getCamera().getCameraMatrix());
+					mat.mul(l.transform);
+					try
+					{
+						mat.invert();
+					} catch (Exception e)
+					{
+						continue;
+					}
+					mat.transpose();
+					mat.transform(dir);
+					dir.w = 0;
+					dir.normalize();
+					//System.out.println("lightdir " + nLights + " is " + dir.toString());
+					
 					// Pass light direction to shader, we assume the shader stores it in an array "lightDirection[]"
 					lightString = "lightDirection[" + nLights + "]";			
 					id = gl.glGetUniformLocation(activeShaderID, lightString);
 					if(id!=-1)
-						gl.glUniform4f(id, l.direction.x, l.direction.y, l.direction.z, 0);		// Set light direction
+						gl.glUniform4f(id, dir.x, dir.y, dir.z, dir.w);		// Set light direction
 // Only for debugging
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");
 					
-					Vector3f pos = new Vector3f(l.position);
-					//sceneManager.getCamera().getCameraMatrix().transform(pos);
-					//System.out.println("light " + nLights + " is " + pos.toString());
+					Vector4f pos = new Vector4f(l.position.x, l.position.y, l.position.z, 1);
+					l.transform.transform(pos);
+					sceneManager.getCamera().getCameraMatrix().transform(pos);
+					//System.out.println("lightpos " + nLights + " is " + pos.toString());
 					
 					// Pass light position to shader, we assume the shader stores it in an array "lightPosition[]"
 					lightString = "lightPosition[" + nLights + "]";			
 					id = gl.glGetUniformLocation(activeShaderID, lightString);
 					if(id!=-1)
-						gl.glUniform4f(id, pos.x, pos.y, pos.z, 1);		// Set light position
+						gl.glUniform4f(id, pos.x, pos.y, pos.z, pos.w);		// Set light position
 // Only for debugging
 //					else
 //						System.out.print("Could not get location of uniform variable " + lightString + "\n");

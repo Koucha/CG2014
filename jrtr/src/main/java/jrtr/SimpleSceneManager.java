@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.Iterator;
 
-import javax.vecmath.Vector3f;
-
 /**
  * A simple scene manager that stores objects and lights in linked lists.
  */

@@ -1,7 +1,5 @@
 package jrtr;
 
-import javax.media.opengl.GL3;
-
 /**
  * An implementation of {@link VertexData} which adds the handle to the OpenGL
  * vertex array object (VAO) of this vertex data to it.

@@ -8,13 +8,17 @@ import javax.vecmath.Matrix4f;
 public class GraphSceneIterator
 {
 	Stack<StackElement> nodeStack;
+	INodeRequestData nodeRequestData;
 	
-	public GraphSceneIterator(Node root)
+	public GraphSceneIterator(Node root, INodeRequestData nodeRequestData)
 	{
 		nodeStack = new Stack<StackElement>();
 		Matrix4f identity = new Matrix4f();
 		identity.setIdentity();
 		nodeStack.push(new StackElement(root, identity));
+		
+		this.nodeRequestData = nodeRequestData;
+		this.nodeRequestData.setStack(nodeStack);
 	}
 
 	public <T> boolean hasNext(Class<T> classreference)
@@ -30,7 +34,7 @@ public class GraphSceneIterator
 		{
 			stckel = nodeStack.pop();
 			
-			if(stckel.isAndProgress(classreference, nodeStack))
+			if(stckel.isAndProgress(classreference, nodeRequestData))
 			{
 				nodeStack.push(stckel);
 				return true;
@@ -53,7 +57,7 @@ public class GraphSceneIterator
 		while(!nodeStack.empty())
 		{
 			stckel = nodeStack.pop();
-			retObj = stckel.getAndProgress(classreference, nodeStack);
+			retObj = stckel.getAndProgress(classreference, nodeRequestData);
 			
 			if(retObj != null)
 			{

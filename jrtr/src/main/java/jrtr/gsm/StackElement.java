@@ -1,7 +1,5 @@
 package jrtr.gsm;
 
-import java.util.Stack;
-
 import javax.vecmath.Matrix4f;
 
 /**
@@ -26,12 +24,12 @@ public class StackElement
 	 * And performs all Node specific actions on the nodeStack.
 	 * 
 	 * @param classreference class the Node content should implement
-	 * @param nodeStack stack used for iteration
+	 * @param nodeRequestData additional data used in iteration
 	 * @return true if the Node represents an Object implementing the given class
 	 */
-	public <T> boolean isAndProgress(Class<T> classreference, Stack<StackElement> nodeStack)
+	public <T> boolean isAndProgress(Class<T> classreference, INodeRequestData nodeRequestData)
 	{
-		return node.isAndProgress(classreference, nodeStack, tfMat);
+		return node.isAndProgress(classreference, nodeRequestData, tfMat);
 	}
 	
 	/**
@@ -40,11 +38,11 @@ public class StackElement
 	 * And gets the Object represented by the Node (if possible, else returns null).
 	 * 
 	 * @param classreference class the Node content should implement
-	 * @param nodeStack stack used for iteration
+	 * @param nodeRequestData additional data used in iteration
 	 * @return the Object of represented by the Node or null if the class doesn't match
 	 */
-	public <T> T getAndProgress(Class<T> classreference, Stack<StackElement> nodeStack)
+	public <T> T getAndProgress(Class<T> classreference, INodeRequestData nodeRequestData)
 	{
-		return node.getAndProgress(classreference, nodeStack, tfMat);
+		return node.getAndProgress(classreference, nodeRequestData, tfMat);
 	}
 }

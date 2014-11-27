@@ -29,10 +29,10 @@ public class ShapeMaterialNode extends ShapeNode
 	}
 	
 	@Override
-	protected RenderItem makeRenderItem(Matrix4f tfMatOnStack)
+	protected RenderItem makeRenderItem(Matrix4f transformationToWorld)
 	{
 		shape.setMaterial(material);
-		return new RenderItem(shape, tfMatOnStack);
+		return new RenderItem(shape, transformationToWorld);
 	}
 
 	public Material getMaterial()

@@ -1,9 +1,5 @@
 package jrtr.gsm;
 
-import java.util.Stack;
-
-import javax.vecmath.Matrix4f;
-
 /**
  * Group whose children can be animated via animation task
  * 
@@ -26,9 +22,10 @@ public class AnimationGroup extends TransformGroup
 		this.animator = animator;
 	}
 	
-	public <T> boolean isAndProgress(Class<T> classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	@Override
+	public <T> boolean isAndProgress(Class<T> classreference, INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
-		progress(nodeStack, tfMatOnStack);
+		progress(nodeRequestData, tfMatOnStack);
 		
 		if(classreference.isAssignableFrom(Animator.class))
 		{
@@ -39,9 +36,10 @@ public class AnimationGroup extends TransformGroup
 		}
 	}
 	
-	public <T> T getAndProgress(Class<T> classreference, Stack<StackElement> nodeStack, Matrix4f tfMatOnStack)
+	@Override
+	public <T> T getAndProgress(Class<T> classreference, INodeRequestData nodeRequestData, Matrix4f tfMatOnStack)
 	{
-		progress(nodeStack, tfMatOnStack);
+		progress(nodeRequestData, tfMatOnStack);
 		
 		if(classreference.isAssignableFrom(Animator.class))
 		{

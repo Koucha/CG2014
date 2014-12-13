@@ -1,7 +1,6 @@
 package jrtr.gsm;
 
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import jrtr.RenderItem;
@@ -37,16 +36,13 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
-			{
-				System.out.println("is test bounding sphere");
-				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
-				{
-					System.out.println("cull");
-					return false;
-				}
-				System.out.println("don't cull");
-			}
+//			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
+//			{
+//				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
+//				{
+//					return false;
+//				}
+//			}
 			
 			return true;
 		}else
@@ -60,16 +56,13 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
-			{
-				System.out.println("get test bounding sphere");
-				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
-				{
-					System.out.println("cull");
-					return null;
-				}
-				System.out.println("don't cull");
-			}
+//			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
+//			{
+//				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
+//				{
+//					return null;
+//				}
+//			}
 			
 			@SuppressWarnings("unchecked")
 			T temp = (T) makeRenderItem(tfMatOnStack);
@@ -140,11 +133,9 @@ public class ShapeNode extends Leaf
 		
 		if(signedDistance > shape.getBoundingSphereRadius())
 		{
-			System.out.println("" + signedDistance + " > " + shape.getBoundingSphereRadius());
 			return true;	//lies above plane
 		}else
 		{
-			System.out.println("" + signedDistance + " <= " + shape.getBoundingSphereRadius());
 			return false;	//lies beyond plane
 		}
 	}

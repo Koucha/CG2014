@@ -80,14 +80,27 @@ public class Main
 			light.type = Light.Type.DIRECTIONAL;
 			root.add(new LightNode(light));
 			
-			for(int i = 0; i < 30; i++)
-			{
-				for(int j = 0; j < 30; j++)
-				{
-					root.add(new TransformGroup().translate(new Vector3f(2*i - 30, 0, 2*j - 30))
-												 .add(new ShapeMaterialNode(ObjRS.getInstanceTeaPot(), WoodMat.getInstance())));		
-				}
-			}
+			Vector3f vecs[] = new Vector3f[10];
+			vecs[9] = new Vector3f(0,2,0);
+			vecs[8] = new Vector3f(1,2,0);
+			vecs[7] = new Vector3f(1,2,0);
+			vecs[6] = new Vector3f(1,1.5f,0);
+			vecs[5] = new Vector3f(1,1,0);
+			vecs[4] = new Vector3f(1,1,0);
+			vecs[3] = new Vector3f(2,1,0);
+			vecs[2] = new Vector3f(2,0,0);
+			vecs[1] = new Vector3f(2,0,0);
+			vecs[0] = new Vector3f(0,0,0);
+			root.add(new TransformGroup().translate(new Vector3f(-2,0,0))
+					.add(new ShapeMaterialNode(RotationalBodyRS.generate(3, vecs, 50, 30), WoodMat.getInstance())));
+			
+			vecs = new Vector3f[4];
+			vecs[3] = new Vector3f(0,2,0);
+			vecs[2] = new Vector3f(1.5f,2,0);
+			vecs[1] = new Vector3f(1.5f,0,0);
+			vecs[0] = new Vector3f(0,0,0);
+			root.add(new TransformGroup().translate(new Vector3f(2,0,0))
+					.add(new ShapeMaterialNode(RotationalBodyRS.generate(1, vecs, 50, 30), WoodMat.getInstance())));
 			
 			sceneManager.setGraph(root);
 			
@@ -347,7 +360,7 @@ public class Main
 		renderPanel = new SimpleRenderPanel();
 		
 		// Make the main window of this application and add the renderer to it
-		JFrame jframe = new JFrame("T5 - A2");	//TODO change, always.
+		JFrame jframe = new JFrame("T1 - A6");	//TODO change, always.
 		jframe.setSize(700, 700);
 		jframe.setLocationRelativeTo(null); // center of screen
 		jframe.getContentPane().add(renderPanel.getCanvas());// put the canvas into a JFrame window

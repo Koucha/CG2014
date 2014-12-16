@@ -350,8 +350,43 @@ public class MeshData {
 	 * Subdivide with the Loop-algorithm. This results in a smoother shape that
 	 * consists of triangles
 	 */
-	public void loop() {
-		//TODO: this is the part you should implement :-)
+	public void loop()
+	{
+		List<Vertex> list = new ArrayList<Vertex>();
+		for(Edge edge:edgeTable)
+		{
+			Vertex v = new Vertex(new Vector3f(0,0,0));
+			v.scaleAdd(1f/8, vertexTable.get(edge.getNextEdge(edge.f1).getEndVertex(edge.f1)))
+			 .scaleAdd(1f/8, vertexTable.get(edge.getNextEdge(edge.f2).getEndVertex(edge.f2)))
+			 .scaleAdd(3f/8, vertexTable.get(edge.v1))
+			 .scaleAdd(3f/8, vertexTable.get(edge.v2));
+			list.add(v);
+		}
+		for(Vertex vert:vertexTable)
+		{
+			List<Vertex> sl = findVertices(vert);
+			Vertex v = new Vertex(new Vector3f(0,0,0));
+			float s = 3f/(8*sl.size());
+			if(sl.size() == 3)
+			{
+				s = 3f/16;
+				v.scaleAdd(7f/16, vert);
+			}else
+			{
+				v.scaleAdd(5f/8, vert);
+			}
+			
+			for(Vertex tv:sl)
+			{
+				v.scaleAdd(s, tv);
+			}
+			
+			list.add(v);
+		}
+		
+		//TODO
+		
+		createVertexData();
 	}
 	
 	
@@ -484,6 +519,23 @@ public class MeshData {
 			this.color = new Vector3f(vertex.color);
 			this.normal = new Vector3f(vertex.normal);
 			this.texCoord = new Vector2f(vertex.texCoord);
+		}
+		
+		public Vertex scaleAdd(float s, Vertex v)
+		{
+			this.position.x = this.position.x + s*v.position.x;
+			this.position.y = this.position.y + s*v.position.y;
+			this.position.z = this.position.z + s*v.position.z;
+			this.color.x = this.color.x + s*v.color.x;
+			this.color.y = this.color.y + s*v.color.y;
+			this.color.z = this.color.z + s*v.color.z;
+			this.normal.x = this.normal.x + s*v.normal.x;
+			this.normal.y = this.normal.y + s*v.normal.y;
+			this.normal.z = this.normal.z + s*v.normal.z;
+			this.texCoord.x = this.texCoord.x + s*v.texCoord.x;
+			this.texCoord.y = this.texCoord.y + s*v.texCoord.y;
+			
+			return this;
 		}
 	}
 

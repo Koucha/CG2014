@@ -170,8 +170,7 @@ public class GLRenderContext implements RenderContext {
 			int attribIndex = -1;
 			switch (e.getSemantic()) {
 			case POSITION:
-				attribIndex = gl
-						.glGetAttribLocation(activeShaderID, "position");
+				attribIndex = gl.glGetAttribLocation(activeShaderID, "position");
 				break;
 			case NORMAL:
 				attribIndex = gl.glGetAttribLocation(activeShaderID, "normal");
@@ -180,13 +179,11 @@ public class GLRenderContext implements RenderContext {
 				attribIndex = gl.glGetAttribLocation(activeShaderID, "color");
 				break;
 			case TEXCOORD:
-				attribIndex = gl
-						.glGetAttribLocation(activeShaderID, "texcoord");
+				attribIndex = gl.glGetAttribLocation(activeShaderID, "texcoord");
 				break;
 			}
 
-			gl.glVertexAttribPointer(attribIndex, dim, GL3.GL_FLOAT, false, 0,
-					0);
+			gl.glVertexAttribPointer(attribIndex, dim, GL3.GL_FLOAT, false, 0,0);
 			gl.glEnableVertexAttribArray(attribIndex);
 		}
 

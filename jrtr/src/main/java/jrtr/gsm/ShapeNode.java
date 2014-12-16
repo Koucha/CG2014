@@ -36,13 +36,13 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-//			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
-//			{
-//				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
-//				{
-//					return false;
-//				}
-//			}
+			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
+			{
+				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
+				{
+					return false;
+				}
+			}
 			
 			return true;
 		}else
@@ -56,13 +56,13 @@ public class ShapeNode extends Leaf
 	{
 		if(classreference.isAssignableFrom(RenderItem.class))
 		{
-//			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
-//			{
-//				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
-//				{
-//					return null;
-//				}
-//			}
+			if(ShapeNodeRequestData.class.isAssignableFrom(nodeRequestData.getClass()))
+			{
+				if(isBoundingSphereIntersecting(tfMatOnStack, ((ShapeNodeRequestData)nodeRequestData).getGsm()) == false)
+				{
+					return null;
+				}
+			}
 			
 			@SuppressWarnings("unchecked")
 			T temp = (T) makeRenderItem(tfMatOnStack);

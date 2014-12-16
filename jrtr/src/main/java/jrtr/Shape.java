@@ -42,6 +42,12 @@ public class Shape {
 		return vertexData;
 	}
 	
+	public void setVertexData(VertexData vertexData)
+	{
+		this.vertexData = vertexData;
+		calculateBoundingSphere();
+	}
+	
 	public void setTransformation(Matrix4f t)
 	{
 		this.t = t;

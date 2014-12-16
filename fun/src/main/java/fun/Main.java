@@ -30,6 +30,10 @@ public class Main
 	
 	static final float BASESTEP = 0.1f;
 	static float xAngle, yAngle, stepsize;
+	static ShapeMaterialNode nodeX;
+	static MeshData meshX;
+	static ShapeMaterialNode nodeY;
+	static MeshData meshY;
 	static boolean keyDownW, keyDownA, keyDownS, keyDownD, keyDownSpace, fixedF, runAnimation;
 	static boolean mouseValid;
 	static int mousex, mousey;
@@ -91,16 +95,38 @@ public class Main
 			vecs[2] = new Vector3f(2,0,0);
 			vecs[1] = new Vector3f(2,0,0);
 			vecs[0] = new Vector3f(0,0,0);
-			root.add(new TransformGroup().translate(new Vector3f(-2,0,0))
-					.add(new ShapeMaterialNode(RotationalBodyRS.generate(3, vecs, 50, 30), WoodMat.getInstance())));
+			vecs = new Vector3f[13];
+			vecs[ 0] = new Vector3f(0,0,0);//
+			vecs[ 1] = new Vector3f(1,0,0);
+			vecs[ 2] = new Vector3f(1,-0.3f,0);
+			vecs[ 3] = new Vector3f(1,0.1f,0);//
+			vecs[ 4] = new Vector3f(0.9f,0.2f,0);
+			vecs[ 5] = new Vector3f(0.5f,0.1f,0);
+			vecs[ 6] = new Vector3f(0.5f,0.2f,0);//
+			vecs[ 7] = new Vector3f(0.5f,0.5f,0);
+			vecs[ 8] = new Vector3f(1.1f,0.2f,0);
+			vecs[ 9] = new Vector3f(1.1f,1,0);//
+			vecs[10] = new Vector3f(1.1f,1.5f,0);
+			vecs[11] = new Vector3f(0.4f,3,0);
+			vecs[12] = new Vector3f(0,3,0);//
+			root.add(new TransformGroup().translate(new Vector3f(-2,-3,0))
+					.add(new ShapeMaterialNode(RotationalBodyRS.generate(4, vecs, 50, 30), WoodMat.getInstance())));
 			
 			vecs = new Vector3f[4];
 			vecs[3] = new Vector3f(0,2,0);
 			vecs[2] = new Vector3f(1.5f,2,0);
 			vecs[1] = new Vector3f(1.5f,0,0);
 			vecs[0] = new Vector3f(0,0,0);
-			root.add(new TransformGroup().translate(new Vector3f(2,0,0))
+			root.add(new TransformGroup().translate(new Vector3f(2,-3,0))
 					.add(new ShapeMaterialNode(RotationalBodyRS.generate(1, vecs, 50, 30), WoodMat.getInstance())));
+			
+			nodeX = new ShapeMaterialNode(ClosedCubeRS.getInstance(), SimpleMat.getInstance());
+			meshX = new MeshData(ClosedCubeRS.getInstance().getVertexData(), r);
+			root.add(new TransformGroup().translate(new Vector3f(-2,2,0)).add(nodeX));
+			
+			nodeY = new ShapeMaterialNode(ClosedHornedCubeRS.getInstance(), SimpleMat.getInstance());
+			meshY = new MeshData(ClosedHornedCubeRS.getInstance().getVertexData(), r);
+			root.add(new TransformGroup().translate(new Vector3f(2,2,0)).add(nodeY));
 			
 			sceneManager.setGraph(root);
 			
@@ -324,6 +350,20 @@ public class Main
 				case 'f': {
 					fixedF = !fixedF;
 					mouseValid = false;
+					break;
+				}
+				case 'R': {
+					meshX = new MeshData(ClosedCubeRS.getInstance().getVertexData(), renderContext);
+					nodeX.setShape(ClosedCubeRS.getInstance());
+					meshY = new MeshData(ClosedHornedCubeRS.getInstance().getVertexData(), renderContext);
+					nodeY.setShape(ClosedHornedCubeRS.getInstance());
+					break;
+				}
+				case 't': {
+					meshX.loop();
+					meshY.loop();
+					nodeX.getShape().setVertexData(meshX.getVertexData());
+					nodeY.getShape().setVertexData(meshY.getVertexData());
 					break;
 				}
 				case '1': {

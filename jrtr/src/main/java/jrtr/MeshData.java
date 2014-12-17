@@ -353,8 +353,15 @@ public class MeshData {
 	public void loop()
 	{
 		List<Vertex> list = new ArrayList<Vertex>();
-		for(Edge edge:edgeTable)
+		int ind[] = new int[(faceTable.size()*4)*3];
+		
+		// calc new vertices
+		Edge edge = null;
+		for(int i = 0; i < edgeTable.size(); i++)
 		{
+			edge = edgeTable.get(i);	// O(1) da Arraylist, iterator geht nicht weil Reihenfolge nicht garantiert
+			edge.setIndex(i);
+			
 			Vertex v = new Vertex(new Vector3f(0,0,0));
 			v.scaleAdd(1f/8, vertexTable.get(edge.getNextEdge(edge.f1).getEndVertex(edge.f1)))
 			 .scaleAdd(1f/8, vertexTable.get(edge.getNextEdge(edge.f2).getEndVertex(edge.f2)))
@@ -362,8 +369,13 @@ public class MeshData {
 			 .scaleAdd(3f/8, vertexTable.get(edge.v2));
 			list.add(v);
 		}
-		for(Vertex vert:vertexTable)
+
+		// calc smoothed old vertices
+		Vertex vert = null;
+		for(int i = 0; i < vertexTable.size(); i++)
 		{
+			vert = vertexTable.get(i);
+			
 			List<Vertex> sl = findVertices(vert);
 			Vertex v = new Vertex(new Vector3f(0,0,0));
 			float s = 3f/(8*sl.size());
@@ -383,10 +395,41 @@ public class MeshData {
 			
 			list.add(v);
 		}
+
+		// calc indices
+		int i = 0;
+		for(Face fac:faceTable)	// Reihenfolge egal -> Iterator ok
+		{
+			List<Edge> border = findEdges(fac);
+			int v1 = border.get(0).getStartVertex(fac) + edgeTable.size();
+			int e1 = border.get(0).getIndex();
+			int v2 = border.get(1).getStartVertex(fac) + edgeTable.size();
+			int e2 = border.get(1).getIndex();
+			int v3 = border.get(2).getStartVertex(fac) + edgeTable.size();
+			int e3 = border.get(2).getIndex();
+			
+			ind[i  ] = e1;
+			ind[i+1] = e2;
+			ind[i+2] = e3;
+			i += 3;
+			
+			ind[i  ] = v1;
+			ind[i+1] = e1;
+			ind[i+2] = e3;
+			i += 3;
+			
+			ind[i  ] = v2;
+			ind[i+1] = e2;
+			ind[i+2] = e1;
+			i += 3;
+			
+			ind[i  ] = v3;
+			ind[i+1] = e3;
+			ind[i+2] = e2;
+			i += 3;
+		}
 		
-		//TODO
-		
-		createVertexData();
+		createMesh(list, ind);
 	}
 	
 	
@@ -395,7 +438,8 @@ public class MeshData {
 		protected int v1, v2;
 		protected Face f1, f2;
 		//e0 shares v1 and f1, e1 shares v2 and f1, e2 shares v1 and f2 and e3 shares v2 and f2 with this edge
-		protected Edge[] edges; 
+		protected Edge[] edges;
+		protected int index;
 
 		/**
 		 * Creates a new edge that connects the two given vertices. This defines
@@ -439,6 +483,20 @@ public class MeshData {
 
 		public boolean connects(int v1, int v2) {
 			return (this.v1 == v1 && this.v2 == v2 || this.v1 == v2 && this.v2 == v1);
+		}
+		
+		/**
+		 * @return the index
+		 */
+		public int getIndex() {
+			return index;
+		}
+
+		/**
+		 * @param index the index to set
+		 */
+		public void setIndex(int index) {
+			this.index = index;
 		}
 
 		public Edge getNextEdge(Face f) {
@@ -526,14 +584,26 @@ public class MeshData {
 			this.position.x = this.position.x + s*v.position.x;
 			this.position.y = this.position.y + s*v.position.y;
 			this.position.z = this.position.z + s*v.position.z;
-			this.color.x = this.color.x + s*v.color.x;
-			this.color.y = this.color.y + s*v.color.y;
-			this.color.z = this.color.z + s*v.color.z;
-			this.normal.x = this.normal.x + s*v.normal.x;
-			this.normal.y = this.normal.y + s*v.normal.y;
-			this.normal.z = this.normal.z + s*v.normal.z;
-			this.texCoord.x = this.texCoord.x + s*v.texCoord.x;
-			this.texCoord.y = this.texCoord.y + s*v.texCoord.y;
+			
+			if(this.color != null && v.color !=null)
+			{
+				this.color.x = this.color.x + s*v.color.x;
+				this.color.y = this.color.y + s*v.color.y;
+				this.color.z = this.color.z + s*v.color.z;
+			}
+			
+			if(this.normal != null && v.normal != null)
+			{
+				this.normal.x = this.normal.x + s*v.normal.x;
+				this.normal.y = this.normal.y + s*v.normal.y;
+				this.normal.z = this.normal.z + s*v.normal.z;
+			}
+			
+			if(this.texCoord != null && v.texCoord != null)
+			{
+				this.texCoord.x = this.texCoord.x + s*v.texCoord.x;
+				this.texCoord.y = this.texCoord.y + s*v.texCoord.y;
+			}
 			
 			return this;
 		}

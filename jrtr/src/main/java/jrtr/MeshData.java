@@ -367,6 +367,7 @@ public class MeshData {
 			 .scaleAdd(1f/8, vertexTable.get(edge.getNextEdge(edge.f2).getEndVertex(edge.f2)))
 			 .scaleAdd(3f/8, vertexTable.get(edge.v1))
 			 .scaleAdd(3f/8, vertexTable.get(edge.v2));
+			v.normal.normalize();
 			list.add(v);
 		}
 
